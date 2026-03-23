@@ -47,6 +47,15 @@
                     </label>
                     <span class="error-text">Bitte wähle eine Option.</span>
                 </div>
+
+                <div class="photo-upload">
+                    <label for="photo1" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen</label>
+                    <input type="file" id="photo1" accept="image/*" capture="environment" style="display: none;">
+                    <div class="photo-preview-container hidden" id="preview-container-1">
+                        <img id="preview-img-1" src="" alt="Vorschau" class="photo-preview">
+                        <button type="button" class="btn-remove-photo" data-step="1">✖</button>
+                    </div>
+                </div>
                 
                 <div class="button-group right">
                     <button type="button" class="btn btn-primary next-btn">Weiter</button>
@@ -67,6 +76,15 @@
                         <span class="card-content">Nein</span>
                     </label>
                     <span class="error-text">Bitte wähle eine Option.</span>
+                </div>
+
+                <div class="photo-upload">
+                    <label for="photo2" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen</label>
+                    <input type="file" id="photo2" accept="image/*" capture="environment" style="display: none;">
+                    <div class="photo-preview-container hidden" id="preview-container-2">
+                        <img id="preview-img-2" src="" alt="Vorschau" class="photo-preview">
+                        <button type="button" class="btn-remove-photo" data-step="2">✖</button>
+                    </div>
                 </div>
 
                 <div class="button-group between">
@@ -91,6 +109,15 @@
                     <span class="error-text">Bitte wähle eine Option.</span>
                 </div>
 
+                <div class="photo-upload">
+                    <label for="photo3" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen</label>
+                    <input type="file" id="photo3" accept="image/*" capture="environment" style="display: none;">
+                    <div class="photo-preview-container hidden" id="preview-container-3">
+                        <img id="preview-img-3" src="" alt="Vorschau" class="photo-preview">
+                        <button type="button" class="btn-remove-photo" data-step="3">✖</button>
+                    </div>
+                </div>
+
                 <div class="button-group between">
                     <button type="button" class="btn btn-secondary prev-btn">Zurück</button>
                     <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);">send mail</button>
@@ -100,7 +127,6 @@
         </form>
     </main>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

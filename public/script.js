@@ -9,9 +9,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageBox = document.getElementById('message-box');
 
     let currentStep = 0;
-    let screenshot1 = null;
-    let screenshot2 = null;
-    let screenshot3 = null;
+    
+    // Store Base64 photos
+    let photos = [null, null, null]; 
+
+    // Handle Photo Uploads
+    for (let i = 1; i <= 3; i++) {
+        const photoInput = document.getElementById(`photo${i}`);
+        const previewContainer = document.getElementById(`preview-container-${i}`);
+        const previewImg = document.getElementById(`preview-img-${i}`);
+        const removeBtn = document.querySelector(`.btn-remove-photo[data-step="${i}"]`);
+
+        photoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64String = event.target.result;
+                    photos[i-1] = base64String;
+                    previewImg.src = base64String;
+                    previewContainer.classList.remove('hidden');
+                };
+                // Resize or direct read. A direct read is fine for now
+                reader.readAsDataURL(file);
+            }
+        });
+
+        removeBtn.addEventListener('click', function() {
+            photoInput.value = '';
+            photos[i-1] = null;
+            previewImg.src = '';
+            previewContainer.classList.add('hidden');
+        });
+    }
 
     // Remove error class on change
     const radios = document.querySelectorAll('input[type="radio"]');
@@ -25,26 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     nextBtns.forEach(btn => {
-        btn.addEventListener('click', async () => {
+        btn.addEventListener('click', () => {
             if (validateStep(currentStep)) {
-                
-                // Show loading during capture
-                const orgText = btn.innerHTML;
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner"></span>...';
-
-                try {
-                    const canvas = await html2canvas(document.body);
-                    const imgData = canvas.toDataURL('image/jpeg', 0.8); // Use JPEG for smaller payload
-                    if (currentStep === 0) screenshot1 = imgData;
-                    else if (currentStep === 1) screenshot2 = imgData;
-                } catch (e) {
-                    console.error('Screenshot error:', e);
-                }
-
-                btn.innerHTML = orgText;
-                btn.disabled = false;
-
                 currentStep++;
                 updateFormSteps();
                 updateProgressbar();
@@ -127,21 +139,13 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBox.classList.add('hidden');
         messageBox.className = 'message-box hidden';
 
-        // Capture screenshot 3
-        try {
-            const canvas = await html2canvas(document.body);
-            screenshot3 = canvas.toDataURL('image/jpeg', 0.8);
-        } catch (error) {
-            console.error('Screenshot error:', error);
-        }
-
         // Collect data
         const formData = new FormData(form);
         const data = {
             question1: formData.get('question1'),
             question2: formData.get('question2'),
             question3: formData.get('question3'),
-            screenshots: [screenshot1, screenshot2, screenshot3]
+            screenshots: photos // pass photos array to the backend exactly as before expected
         };
 
         try {
@@ -158,6 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok && result.success) {
                 showMessage(result.message || 'Erfolgreich gesendet!', 'success');
                 form.reset();
+                // reset photos
+                photos = [null, null, null];
+                for(let i=1; i<=3; i++){
+                    document.getElementById(`preview-container-${i}`).classList.add('hidden');
+                    document.getElementById(`preview-img-${i}`).src = '';
+                }
                 currentStep = 0;
                 updateFormSteps();
                 updateProgressbar();
