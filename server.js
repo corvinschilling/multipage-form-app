@@ -27,7 +27,17 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // API Endpoint to handle form submission
 app.post('/api/submit', async (req, res) => {
     try {
-        const { nrChantier, accesSecurite, accesSecuriteSub, consignesVisibles, photos } = req.body;
+        const { 
+            nrChantier, 
+            accesSecurite, 
+            accesSecuriteSub, 
+            consignesVisibles, 
+            substancesDangereuses,
+            substancesSub,
+            machinesOutils,
+            epi,
+            photos 
+        } = req.body;
 
         // Basic backend validation
         if (!nrChantier || !accesSecurite || !consignesVisibles) {
@@ -58,6 +68,7 @@ app.post('/api/submit', async (req, res) => {
         if (photos) {
             if (photos.photoAcces) processPhoto(photos.photoAcces, 'Accès et sécurité');
             if (photos.photoConsignes) processPhoto(photos.photoConsignes, 'Consignes de sécurité');
+            if (photos.photoStockage) processPhoto(photos.photoStockage, 'Stockage correct');
             
             if (photos.photoMateriaux && Array.isArray(photos.photoMateriaux)) {
                 photos.photoMateriaux.forEach((base64Data, index) => {
@@ -78,6 +89,16 @@ app.post('/api/submit', async (req, res) => {
             
             <p><strong>Consignes de sécurité visibles:</strong> ${consignesVisibles}</p>
             
+            <hr />
+            <p><strong>Substances dangereuses:</strong> ${substancesDangereuses || 'Non spécifié'}</p>
+            ${(substancesSub && substancesSub.length > 0) ? `<p><strong>Détails substances:</strong> ${substancesSub.join(', ')}</p>` : ''}
+            
+            <hr />
+            <p><strong>Machines et outils:</strong> ${(machinesOutils && machinesOutils.length > 0) ? machinesOutils.join(', ') : 'Aucun'}</p>
+            
+            <hr />
+            <p><strong>Equipement de protection individuelle (EPI):</strong> ${epi || 'Non spécifié'}</p>
+
             <hr />
             <h2>Photos jointes</h2>
             ${photosHtml || '<p>Aucune photo téléchargée.</p>'}

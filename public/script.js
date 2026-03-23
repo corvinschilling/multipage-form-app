@@ -20,12 +20,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let photoData = {
         photoAcces: null,
         photoConsignes: null,
-        photoMateriaux: []
+        photoMateriaux: [],
+        photoStockage: null
     };
+
+    // Check saved language
+    const savedLang = localStorage.getItem('sitecheck_lang');
+    if (savedLang === 'fr') {
+        if (langSelection) langSelection.classList.add('hidden');
+        if (formContent) formContent.classList.remove('hidden');
+    }
 
     // Language Handlers
     if (langFrBtn) {
         langFrBtn.addEventListener('click', () => {
+            localStorage.setItem('sitecheck_lang', 'fr');
             langSelection.classList.add('hidden');
             formContent.classList.remove('hidden');
         });
@@ -74,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle Single Photo Uploads
-    ['photoAcces', 'photoConsignes'].forEach(id => {
+    ['photoAcces', 'photoConsignes', 'photoStockage'].forEach(id => {
         const input = document.getElementById(id);
         if(!input) return;
         const previewContainer = document.getElementById(`preview-container-${id.replace('photo', '').toLowerCase()}`);
@@ -180,10 +189,55 @@ document.addEventListener('DOMContentLoaded', () => {
                 consignesPhotoGroup.classList.remove('is-required');
                 document.getElementById('photoConsignes').value = '';
                 photoData.photoConsignes = null;
-                document.getElementById('preview-container-consignes').classList.add('hidden');
+                if(document.getElementById('preview-container-consignes')) {
+                    document.getElementById('preview-container-consignes').classList.add('hidden');
+                }
             }
         });
     });
+
+    const substancesRadios = document.querySelectorAll('input[name="substancesDangereuses"]');
+    const substancesSubGroup = document.getElementById('substancesSubGroup');
+    const substancesSubCheckboxes = document.querySelectorAll('input[name="substancesSub"]');
+    const stockagePhotoGroup = document.getElementById('stockagePhotoGroup');
+    const chkStockageCorrect = document.getElementById('chk-stockage-correct');
+
+    substancesRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'oui') {
+                substancesSubGroup.classList.remove('hidden');
+                substancesSubGroup.classList.add('is-required');
+            } else {
+                substancesSubGroup.classList.add('hidden');
+                substancesSubGroup.classList.remove('is-required');
+                substancesSubCheckboxes.forEach(c => c.checked = false);
+                stockagePhotoGroup.classList.add('hidden');
+                stockagePhotoGroup.classList.remove('is-required');
+                document.getElementById('photoStockage').value = '';
+                photoData.photoStockage = null;
+                if(document.getElementById('preview-container-stockage')) {
+                    document.getElementById('preview-container-stockage').classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    if (chkStockageCorrect) {
+        chkStockageCorrect.addEventListener('change', () => {
+            if (chkStockageCorrect.checked) {
+                stockagePhotoGroup.classList.remove('hidden');
+                stockagePhotoGroup.classList.add('is-required');
+            } else {
+                stockagePhotoGroup.classList.add('hidden');
+                stockagePhotoGroup.classList.remove('is-required');
+                document.getElementById('photoStockage').value = '';
+                photoData.photoStockage = null;
+                if(document.getElementById('preview-container-stockage')) {
+                    document.getElementById('preview-container-stockage').classList.add('hidden');
+                }
+            }
+        });
+    }
 
     const inputs = document.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
@@ -220,18 +274,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Custom validation for nrChantier (exactly 9 digits)
         const nrChantierInput = currentStepElement.querySelector('#nrChantier');
         if (nrChantierInput) {
-            // Strip any non-digit character just to be safe in testing
             const rawVal = nrChantierInput.value.replace(/\D/g, ''); 
             if (rawVal.length !== 9) {
                 nrChantierInput.closest('.input-group').classList.add('error');
                 isValid = false;
             } else {
                 nrChantierInput.closest('.input-group').classList.remove('error');
-                nrChantierInput.value = rawVal; // update input with cleaned value
+                nrChantierInput.value = rawVal; 
             }
         }
 
-        // Check required text inputs (ignoring nrChantier since it's custom)
+        // Check required text inputs
         const requiredInputs = currentStepElement.querySelectorAll('input[type="text"][required]:not(#nrChantier), select[required]');
         requiredInputs.forEach(input => {
             const group = input.closest('.input-group');
@@ -244,11 +297,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Check radio groups
-        const requiredRadioGroups = [...new Set(Array.from(currentStepElement.querySelectorAll('input[type="radio"][required]')).map(r => r.name))];
-        requiredRadioGroups.forEach(name => {
-            const isChecked = currentStepElement.querySelector(`input[name="${name}"]:checked`) !== null;
-            const group = currentStepElement.querySelector(`input[name="${name}"]`).closest('.input-group');
-            if (!isChecked) {
+        const requiredRadioGroupsItems = currentStepElement.querySelectorAll('input[type="radio"][required]');
+        if(requiredRadioGroupsItems.length > 0) {
+            const requiredRadioGroups = [...new Set(Array.from(requiredRadioGroupsItems).map(r => r.name))];
+            requiredRadioGroups.forEach(name => {
+                const isChecked = currentStepElement.querySelector(`input[name="${name}"]:checked`) !== null;
+                const group = currentStepElement.querySelector(`input[name="${name}"]`).closest('.input-group');
+                if (!isChecked) {
+                    group.classList.add('error');
+                    isValid = false;
+                } else {
+                    group.classList.remove('error');
+                }
+            });
+        }
+
+        // Always required Checkbox Groups (like Machines et Outils)
+        const requiredCheckboxGroups = currentStepElement.querySelectorAll('.is-required-checkbox');
+        requiredCheckboxGroups.forEach(group => {
+            const isChecked = group.querySelectorAll('input[type="checkbox"]:checked').length > 0;
+            if(!isChecked) {
                 group.classList.add('error');
                 isValid = false;
             } else {
@@ -256,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Check Custom required sub-groups
+        // Check Custom required sub-groups (only if parent is visible)
         const requiredSubGroups = currentStepElement.querySelectorAll('.is-required');
         requiredSubGroups.forEach(group => {
             if(group.id === 'accesSecuriteSubGroup') {
@@ -275,17 +343,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     group.classList.remove('error');
                 }
+            } else if(group.id === 'substancesSubGroup' || group.classList.contains('is-checkbox-group')) {
+                // If it's a checkbox conditionally required group
+                const checkboxes = group.querySelectorAll('input[type="checkbox"]');
+                const isChecked = Array.from(checkboxes).some(c => c.checked);
+                const cbGroup = group.querySelector('.checkbox-options');
+                if(!isChecked) {
+                    if(cbGroup) cbGroup.classList.add('error');
+                    isValid = false;
+                } else {
+                    if(cbGroup) cbGroup.classList.remove('error');
+                }
+            } else if(group.id === 'stockagePhotoGroup') {
+                if(!photoData.photoStockage) {
+                    group.classList.add('error');
+                    isValid = false;
+                } else {
+                    group.classList.remove('error');
+                }
             }
         });
 
         // Check Always required photos
-        if(stepIndex === 1) { // Step 2
-            const accesPhotoGroup = document.getElementById('photoAcces').closest('.photo-upload');
-            if (!photoData.photoAcces) {
-                accesPhotoGroup.classList.add('error');
-                isValid = false;
-            } else {
-                accesPhotoGroup.classList.remove('error');
+        if(stepIndex === 1) { // Step 2 - Acces photo
+            const accesPhotoGroup = document.getElementById('photoAcces');
+            if(accesPhotoGroup) {
+                const groupParent = accesPhotoGroup.closest('.photo-upload');
+                if (!photoData.photoAcces) {
+                    groupParent.classList.add('error');
+                    isValid = false;
+                } else {
+                    groupParent.classList.remove('error');
+                }
             }
         }
 
@@ -333,11 +422,20 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBox.className = 'message-box hidden';
 
         const formData = new FormData(form);
+        
+        // Ensure checkboxes are grouped correctly as arrays
+        const machinesOutils = formData.getAll('machinesOutils');
+        const substancesSub = formData.getAll('substancesSub');
+
         const data = {
             nrChantier: formData.get('nrChantier'),
             accesSecurite: formData.get('accesSecurite'),
             accesSecuriteSub: formData.get('accesSecuriteSub'),
             consignesVisibles: formData.get('consignesVisibles'),
+            substancesDangereuses: formData.get('substancesDangereuses'),
+            substancesSub: substancesSub,
+            machinesOutils: machinesOutils,
+            epi: formData.get('epi'),
             photos: photoData
         };
 
