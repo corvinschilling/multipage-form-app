@@ -4,6 +4,9 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 console.log("ENV PATH:", path.resolve(__dirname, '.env'));
 console.log("SMTP_HOST:", process.env.SMTP_HOST);
 
+console.log("SMTP_USER:", process.env.SMTP_USER);
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? "SET" : "NOT SET");
+
 const express = require('express');
 const nodemailer = require('nodemailer');
 const cors = require('cors');
