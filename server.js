@@ -2,13 +2,12 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 console.log("ENV PATH:", path.resolve(__dirname, '.env'));
-console.log("SMTP_HOST:", process.env.SMTP_HOST);
-
-console.log("SMTP_USER:", process.env.SMTP_USER);
-console.log("SMTP_PASS:", process.env.SMTP_PASS ? "SET" : "NOT SET");
+console.log("RESEND_API_KEY:", process.env.RESEND_API_KEY ? "SET" : "NOT SET");
+console.log("MAIL_FROM:", process.env.MAIL_FROM);
+console.log("MAIL_TO:", process.env.MAIL_TO);
 
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const cors = require('cors');
 
 const app = express();
@@ -22,17 +21,8 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Email Transporter Configuration
-// Note: It is best practice to enter these details in the .env file!
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    }
-});
+// Resend Configuration
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // API Endpoint to handle form submission
 app.post('/api/submit', async (req, res) => {
@@ -53,17 +43,16 @@ app.post('/api/submit', async (req, res) => {
                     const base64Image = base64Data.split(';base64,').pop();
                     attachments.push({
                         filename: `screenshot_frage${index + 1}.jpg`,
-                        content: base64Image,
-                        encoding: 'base64'
+                        content: base64Image
                     });
                 }
             });
         }
 
-        // Prepare Email Content
-        const mailOptions = {
-            from: process.env.MAIL_FROM || process.env.SMTP_USER || 'noreply@example.com',
-            to: 'sitecheck@lampertz.lu',
+        // Prepare and send Email
+        const { data, error } = await resend.emails.send({
+            from: process.env.MAIL_FROM,
+            to: [process.env.MAIL_TO || 'sitecheck@lampertz.lu'],
             subject: 'Neue Formular-Einsendung von der Web-App',
             html: `
                 <h2>Neue Formular-Einsendung</h2>
@@ -73,11 +62,14 @@ app.post('/api/submit', async (req, res) => {
                 <p><br><em>Die Screenshots der Formularschritte sind als Anhang beigefügt.</em></p>
             `,
             attachments: attachments
-        };
+        });
 
-        // Send Email
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Message sent: %s', info.messageId);
+        if (error) {
+            console.error('Resend error:', error);
+            return res.status(500).json({ success: false, message: 'Fehler beim Senden der E-Mail.' });
+        }
+
+        console.log('Message sent:', data);
 
         // Success response
         res.status(200).json({ success: true, message: 'Formular erfolgreich gesendet!' });
