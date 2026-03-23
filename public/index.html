@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Page Form</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <main class="form-container glass-effect">
+        <h1 class="form-title">Umfrage</h1>
+        
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="step active" id="step-indicator-1">1</div>
+            <div class="step-line"></div>
+            <div class="step" id="step-indicator-2">2</div>
+            <div class="step-line"></div>
+            <div class="step" id="step-indicator-3">3</div>
+        </div>
+
+        <!-- Success & Error Messages -->
+        <div id="message-box" class="message-box hidden"></div>
+
+        <form id="multiStepForm" novalidate>
+            
+            <!-- SCHRITT 1 -->
+            <div class="form-step active" id="step-1">
+                <h2>Frage 1</h2>
+                
+                <div class="radio-options input-group">
+                    <label class="radio-card">
+                        <input type="radio" name="question1" value="Ja" required>
+                        <span class="card-content">Ja</span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="question1" value="Nein">
+                        <span class="card-content">Nein</span>
+                    </label>
+                    <span class="error-text">Bitte wähle eine Option.</span>
+                </div>
+                
+                <div class="button-group right">
+                    <button type="button" class="btn btn-primary next-btn">Weiter</button>
+                </div>
+            </div>
+
+            <!-- SCHRITT 2 -->
+            <div class="form-step" id="step-2">
+                <h2>Frage 2</h2>
+
+                <div class="radio-options input-group">
+                    <label class="radio-card">
+                        <input type="radio" name="question2" value="Ja" required>
+                        <span class="card-content">Ja</span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="question2" value="Nein">
+                        <span class="card-content">Nein</span>
+                    </label>
+                    <span class="error-text">Bitte wähle eine Option.</span>
+                </div>
+
+                <div class="button-group between">
+                    <button type="button" class="btn btn-secondary prev-btn">Zurück</button>
+                    <button type="button" class="btn btn-primary next-btn">Weiter</button>
+                </div>
+            </div>
+
+            <!-- SCHRITT 3 -->
+            <div class="form-step" id="step-3">
+                <h2>Frage 3</h2>
+
+                <div class="radio-options input-group">
+                    <label class="radio-card">
+                        <input type="radio" name="question3" value="Ja" required>
+                        <span class="card-content">Ja</span>
+                    </label>
+                    <label class="radio-card">
+                        <input type="radio" name="question3" value="Nein">
+                        <span class="card-content">Nein</span>
+                    </label>
+                    <span class="error-text">Bitte wähle eine Option.</span>
+                </div>
+
+                <div class="button-group between">
+                    <button type="button" class="btn btn-secondary prev-btn">Zurück</button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);">send mail</button>
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
