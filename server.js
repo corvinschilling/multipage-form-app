@@ -31,7 +31,7 @@ app.post('/api/submit', async (req, res) => {
 
         // Basic backend validation
         if (!nrChantier || !accesSecurite || !consignesVisibles) {
-            return res.status(400).json({ success: false, message: 'Bitte alle erforderlichen Felder ausfüllen!' });
+            return res.status(400).json({ success: false, message: 'Veuillez remplir tous les champs obligatoires !' });
         }
 
         // Process attachments
@@ -68,21 +68,19 @@ app.post('/api/submit', async (req, res) => {
 
         // Prepare Email Content
         const html = `
-            <h2>Chantier Audit - Teil 1</h2>
+            <h2>Audit Chantier - Rapport</h2>
             
-            <h3>Site 1</h3>
-            <p><strong>nr.chantier:</strong> ${nrChantier}</p>
+            <p><strong>N° Chantier:</strong> ${nrChantier}</p>
             
             <hr />
-            <h3>Site 2</h3>
             <p><strong>Accès et sécurité:</strong> ${accesSecurite}</p>
-            ${accesSecuriteSub ? `<p><strong>Unteroption (existant):</strong> ${accesSecuriteSub}</p>` : ''}
+            ${accesSecuriteSub ? `<p><strong>Détails (existant):</strong> ${accesSecuriteSub}</p>` : ''}
             
             <p><strong>Consignes de sécurité visibles:</strong> ${consignesVisibles}</p>
             
             <hr />
-            <h2>Fotos</h2>
-            ${photosHtml || '<p>Keine Fotos hochgeladen.</p>'}
+            <h2>Photos jointes</h2>
+            ${photosHtml || '<p>Aucune photo téléchargée.</p>'}
         `;
 
         // Send Email
@@ -102,11 +100,11 @@ app.post('/api/submit', async (req, res) => {
         console.log('Message sent:', data);
 
         // Success response
-        res.status(200).json({ success: true, message: 'Audit (Teil 1) erfolgreich gesendet!' });
+        res.status(200).json({ success: true, message: 'Audit envoyé avec succès !' });
     } catch (error) {
         console.error('Error sending email:', error);
         // Error response
-        res.status(500).json({ success: false, message: 'Server-Fehler. Konnte E-Mail nicht verarbeiten.' });
+        res.status(500).json({ success: false, message: 'Erreur serveur. Impossible de traiter l\'e-mail.' });
     }
 });
 

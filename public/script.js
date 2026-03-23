@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // UI Elements
+    const langFrBtn = document.getElementById('btn-lang-fr');
+    const langDeBtn = document.getElementById('btn-lang-de');
+    const langSelection = document.getElementById('language-selection');
+    const formContent = document.getElementById('form-content');
+
     const nextBtns = document.querySelectorAll('.next-btn');
     const prevBtns = document.querySelectorAll('.prev-btn');
     const formSteps = document.querySelectorAll('.form-step');
@@ -14,8 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let photoData = {
         photoAcces: null,
         photoConsignes: null,
-        photoMateriaux: [] // Array for multiple photos
+        photoMateriaux: []
     };
+
+    // Language Handlers
+    if (langFrBtn) {
+        langFrBtn.addEventListener('click', () => {
+            langSelection.classList.add('hidden');
+            formContent.classList.remove('hidden');
+        });
+    }
+
+    if (langDeBtn) {
+        langDeBtn.addEventListener('click', () => {
+            alert("La version allemande n'est pas encore prête.\nDie deutsche Version ist noch nicht verfügbar.");
+        });
+    }
 
     // Helper: Resize Image
     function resizeImage(file, maxWidth = 1200, maxHeight = 1200) {
@@ -53,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Single Photo Uploads (Site 2)
+    // Handle Single Photo Uploads
     ['photoAcces', 'photoConsignes'].forEach(id => {
         const input = document.getElementById(id);
         if(!input) return;
@@ -70,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     previewImg.src = base64String;
                     previewContainer.classList.remove('hidden');
                     
-                    // Cleanup error if existed
                     const group = input.closest('.photo-upload');
                     if (group) group.classList.remove('error');
                 } catch (error) {
@@ -87,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle Multiple Photo Uploads (Site 3)
+    // Handle Multiple Photo Uploads
     const photoMateriaux = document.getElementById('photoMateriaux');
     const galleryMateriaux = document.getElementById('gallery-materiaux');
     
@@ -99,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const base64String = await resizeImage(file);
                     photoData.photoMateriaux.push(base64String);
                     
-                    // Create preview element
                     const wrapper = document.createElement('div');
                     wrapper.className = 'photo-preview-container';
                     wrapper.style.display = 'inline-block';
@@ -127,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error(error);
                 }
             }
-            // Reset input so same file can be selected again
             photoMateriaux.value = '';
         });
     }
@@ -141,12 +158,11 @@ document.addEventListener('DOMContentLoaded', () => {
         radio.addEventListener('change', () => {
             if (radio.value === 'existant') {
                 accesSubGroup.classList.remove('hidden');
-                // Make sub-radios required manually via logic or attribute
                 accesSubGroup.classList.add('is-required');
             } else {
                 accesSubGroup.classList.add('hidden');
                 accesSubGroup.classList.remove('is-required');
-                accesSubRadios.forEach(r => r.checked = false); // clear selection
+                accesSubRadios.forEach(r => r.checked = false);
             }
         });
     });
@@ -169,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Remove error class on change for text/radios
     const inputs = document.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
         input.addEventListener('input', () => {
@@ -202,8 +217,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentStepElement = formSteps[stepIndex];
         let isValid = true;
 
-        // Check required text inputs (like nrChantier)
-        const requiredInputs = currentStepElement.querySelectorAll('input[type="text"][required], select[required]');
+        // Custom validation for nrChantier (exactly 9 digits)
+        const nrChantierInput = currentStepElement.querySelector('#nrChantier');
+        if (nrChantierInput) {
+            // Strip any non-digit character just to be safe in testing
+            const rawVal = nrChantierInput.value.replace(/\D/g, ''); 
+            if (rawVal.length !== 9) {
+                nrChantierInput.closest('.input-group').classList.add('error');
+                isValid = false;
+            } else {
+                nrChantierInput.closest('.input-group').classList.remove('error');
+                nrChantierInput.value = rawVal; // update input with cleaned value
+            }
+        }
+
+        // Check required text inputs (ignoring nrChantier since it's custom)
+        const requiredInputs = currentStepElement.querySelectorAll('input[type="text"][required]:not(#nrChantier), select[required]');
         requiredInputs.forEach(input => {
             const group = input.closest('.input-group');
             if (!input.checkValidity()) {
@@ -250,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Check Always required photos
-        if(stepIndex === 1) { // Site 2
+        if(stepIndex === 1) { // Step 2
             const accesPhotoGroup = document.getElementById('photoAcces').closest('.photo-upload');
             if (!photoData.photoAcces) {
                 accesPhotoGroup.classList.add('error');
@@ -295,17 +324,14 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Final validation
         if (!validateStep(currentStep)) return;
 
-        // UI Feedback
         submitBtn.disabled = true;
         const orgText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span class="spinner"></span> Sende...';
+        submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
         messageBox.classList.add('hidden');
         messageBox.className = 'message-box hidden';
 
-        // Collect data
         const formData = new FormData(form);
         const data = {
             nrChantier: formData.get('nrChantier'),
@@ -327,16 +353,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showMessage(result.message || 'Erfolgreich gesendet!', 'success');
-                // Optional: full reload or form reset
+                showMessage('Envoyé avec succès !', 'success');
                 setTimeout(() => {
                     window.location.reload();
                 }, 2000);
             } else {
-                showMessage(result.message || 'Fehler beim Senden: ' + (result.message || ''), 'error');
+                showMessage('Erreur lors de l\'envoi : ' + (result.message || ''), 'error');
             }
         } catch (error) {
-            showMessage('Netzwerkfehler. Konnte Server nicht erreichen.', 'error');
+            showMessage('Erreur réseau. Serveur injoignable.', 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = orgText;

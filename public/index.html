@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chantier Audit App</title>
+    <title>Audit Chantier</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -16,151 +16,157 @@
     </div>
 
     <main class="form-container glass-effect">
-        <h1 class="form-title">Audit Chantier - Teil 1</h1>
+        <h1 class="form-title">Audit Chantier</h1>
         
-        <!-- Progress Bar (will be updated for 3 steps currently) -->
-        <div class="progress-container">
-            <div class="step active" id="step-indicator-1">1</div>
-            <div class="step-line"></div>
-            <div class="step" id="step-indicator-2">2</div>
-            <div class="step-line"></div>
-            <div class="step" id="step-indicator-3">3</div>
+        <!-- Language Selection -->
+        <div id="language-selection">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Veuillez choisir votre langue<br><small style="font-size: 0.9rem; color: #cbd5e1; font-weight: normal;">Bitte wählen Sie Ihre Sprache</small></h2>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button type="button" class="btn btn-primary" id="btn-lang-fr" style="flex: 1;">Français</button>
+                <button type="button" class="btn btn-secondary" id="btn-lang-de" style="flex: 1;">Deutsch</button>
+            </div>
         </div>
 
-        <!-- Success & Error Messages -->
-        <div id="message-box" class="message-box hidden"></div>
-
-        <form id="multiStepForm" novalidate>
-            
-            <!-- SITE 1 -->
-            <div class="form-step active" id="step-1">
-                <h2>Site 1</h2>
-                
-                <div class="input-group">
-                    <label for="nrChantier">nr.chantier * (9-stellige Nummer)</label>
-                    <input type="text" id="nrChantier" name="nrChantier" required pattern="^\d{9}$" placeholder="123456789" title="Bitte genau 9 Ziffern eingeben" maxlength="9">
-                    <span class="error-text">Feld erfordert genau 9 Ziffern.</span>
-                </div>
-                
-                <div class="button-group right">
-                    <button type="button" class="btn btn-primary next-btn">Weiter</button>
-                </div>
+        <!-- Form content (hidden initially) -->
+        <div id="form-content" class="hidden">
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="step active" id="step-indicator-1">1</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-2">2</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-3">3</div>
             </div>
 
-            <!-- SITE 2 -->
-            <div class="form-step" id="step-2">
-                <h2>Site 2</h2>
+            <!-- Success & Error Messages -->
+            <div id="message-box" class="message-box hidden"></div>
 
-                <!-- Question 2A -->
-                <div class="question-block">
-                    <label>Accès et sécurité: *</label>
-                    <div class="radio-options input-group">
-                        <label class="radio-card">
-                            <input type="radio" name="accesSecurite" value="pas necessaire" required>
-                            <span class="card-content">pas nécessaire</span>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="accesSecurite" value="existant">
-                            <span class="card-content">existant</span>
-                        </label>
-                        <span class="error-text">Bitte wähle eine Option.</span>
+            <form id="multiStepForm" novalidate>
+                
+                <!-- STEP 1 (formerly Site 1) -->
+                <div class="form-step active" id="step-1">
+                    
+                    <div class="input-group">
+                        <label for="nrChantier">nr.chantier *</label>
+                        <input type="text" id="nrChantier" name="nrChantier" required placeholder="Ex: 123456789" maxlength="15">
+                        <span class="error-text">Ce champ requiert exactement 9 chiffres.</span>
                     </div>
+                    
+                    <div class="button-group right">
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
 
-                    <!-- Sub Options (Hidden by default) -->
-                    <div id="accesSecuriteSubGroup" class="hidden">
-                        <label>Unteroptionen (existant): *</label>
+                <!-- STEP 2 (formerly Site 2) -->
+                <div class="form-step" id="step-2">
+
+                    <!-- Question 2A -->
+                    <div class="question-block">
+                        <label>Accès et securité: *</label>
                         <div class="radio-options input-group">
                             <label class="radio-card">
-                                <input type="radio" name="accesSecuriteSub" value="Manque">
-                                <span class="card-content">Manque</span>
+                                <input type="radio" name="accesSecurite" value="pas necessaire" required>
+                                <span class="card-content">pas nécessaire</span>
                             </label>
                             <label class="radio-card">
-                                <input type="radio" name="accesSecuriteSub" value="Insuffisant">
-                                <span class="card-content">Insuffisant</span>
+                                <input type="radio" name="accesSecurite" value="existant">
+                                <span class="card-content">existant</span>
                             </label>
-                            <span class="error-text">Bitte eine Unteroption wählen.</span>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Sub Options (Hidden by default) -->
+                        <div id="accesSecuriteSubGroup" class="hidden">
+                            <label>Détails (existant): *</label>
+                            <div class="radio-options input-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="accesSecuriteSub" value="manque">
+                                    <span class="card-content">manque</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="accesSecuriteSub" value="insuffisant">
+                                    <span class="card-content">insuffisant</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner une sous-option.</span>
+                            </div>
+                        </div>
+
+                        <!-- Photo Upload (Always required for Accès et sécurité) -->
+                        <div class="photo-upload input-group">
+                            <label for="photoAcces" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                            <input type="file" id="photoAcces" accept="image/*" capture="environment" style="display: none;" required>
+                            <div class="photo-preview-container hidden" id="preview-container-acces">
+                                <img id="preview-img-acces" src="" alt="Aperçu" class="photo-preview">
+                                <button type="button" class="btn-remove-photo" data-target="photoAcces">✖</button>
+                            </div>
+                            <span class="error-text">Une photo est obligatoire !</span>
                         </div>
                     </div>
 
-                    <!-- Photo Upload (Always required for Accès et sécurité) -->
-                    <div class="photo-upload input-group">
-                        <label for="photoAcces" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen *</label>
-                        <input type="file" id="photoAcces" accept="image/*" capture="environment" style="display: none;" required>
-                        <div class="photo-preview-container hidden" id="preview-container-acces">
-                            <img id="preview-img-acces" src="" alt="Vorschau" class="photo-preview">
-                            <button type="button" class="btn-remove-photo" data-target="photoAcces">✖</button>
+                    <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <!-- Question 2B -->
+                    <div class="question-block">
+                        <label>Consignes de sécurité visibles: *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="consignesVisibles" value="existant" required>
+                                <span class="card-content">existant</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="consignesVisibles" value="manque">
+                                <span class="card-content">manque</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="consignesVisibles" value="Illisible/non visible">
+                                <span class="card-content">illisible/non visible</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
                         </div>
-                        <span class="error-text">Ein Foto ist zwingend erforderlich!</span>
-                    </div>
-                </div>
 
-                <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
-
-                <!-- Question 2B -->
-                <div class="question-block">
-                    <label>Consignes de sécurité visibles: *</label>
-                    <div class="radio-options input-group">
-                        <label class="radio-card">
-                            <input type="radio" name="consignesVisibles" value="existant" required>
-                            <span class="card-content">existant</span>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="consignesVisibles" value="manque">
-                            <span class="card-content">manque</span>
-                        </label>
-                        <label class="radio-card">
-                            <input type="radio" name="consignesVisibles" value="Illisible/non visible">
-                            <span class="card-content">Illisible/non visible</span>
-                        </label>
-                        <span class="error-text">Bitte wähle eine Option.</span>
-                    </div>
-
-                    <!-- Photo Upload (Required ONLY IF Illisible/non visible) -->
-                    <div id="consignesPhotoGroup" class="photo-upload input-group hidden">
-                        <label for="photoConsignes" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen *</label>
-                        <input type="file" id="photoConsignes" accept="image/*" capture="environment" style="display: none;">
-                        <div class="photo-preview-container hidden" id="preview-container-consignes">
-                            <img id="preview-img-consignes" src="" alt="Vorschau" class="photo-preview">
-                            <button type="button" class="btn-remove-photo" data-target="photoConsignes">✖</button>
+                        <!-- Photo Upload (Required ONLY IF Illisible/non visible) -->
+                        <div id="consignesPhotoGroup" class="photo-upload input-group hidden">
+                            <label for="photoConsignes" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                            <input type="file" id="photoConsignes" accept="image/*" capture="environment" style="display: none;">
+                            <div class="photo-preview-container hidden" id="preview-container-consignes">
+                                <img id="preview-img-consignes" src="" alt="Aperçu" class="photo-preview">
+                                <button type="button" class="btn-remove-photo" data-target="photoConsignes">✖</button>
+                            </div>
+                            <span class="error-text">Une photo est obligatoire pour cette option !</span>
                         </div>
-                        <span class="error-text">Bei dieser Option ist ein Foto zwingend erforderlich!</span>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
                     </div>
                 </div>
 
-                <div class="button-group between">
-                    <button type="button" class="btn btn-secondary prev-btn">Zurück</button>
-                    <button type="button" class="btn btn-primary next-btn">Weiter</button>
-                </div>
-            </div>
-
-            <!-- SITE 3 -->
-            <div class="form-step" id="step-3">
-                <h2>Site 3</h2>
-                
-                <div class="question-block">
-                    <label>Matériaux et fabrication:</label>
-                    <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1rem;">Envoyer des photos de la zone de stockage (le matériel doit etre visible). Hier können mehrere Fotos hinzugefügt werden.</p>
+                <!-- STEP 3 (formerly Site 3) -->
+                <div class="form-step" id="step-3">
                     
-                    <div class="photo-upload input-group">
-                        <!-- 'multiple' allows selecting multiple files -->
-                        <label for="photoMateriaux" class="btn btn-secondary photo-btn">📸 Fotos aufnehmen / anhängen</label>
-                        <input type="file" id="photoMateriaux" accept="image/*" capture="environment" multiple style="display: none;">
+                    <div class="question-block">
+                        <label>Matériaux et fabrication:</label>
+                        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1rem;">Envoyer des photos de la zone de stockage (le matériel doit etre visible).</p>
                         
-                        <!-- Gallery for multiple photos -->
-                        <div class="photo-gallery" id="gallery-materiaux" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
-                            <!-- Previews will be injected here via JS -->
+                        <div class="photo-upload input-group">
+                            <label for="photoMateriaux" class="btn btn-secondary photo-btn">📸 Prendre / Joindre des photos</label>
+                            <input type="file" id="photoMateriaux" accept="image/*" capture="environment" multiple style="display: none;">
+                            
+                            <!-- Gallery -->
+                            <div class="photo-gallery" id="gallery-materiaux" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
+                            </div>
                         </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);">Soumettre</button>
                     </div>
                 </div>
 
-                <div class="button-group between">
-                    <button type="button" class="btn btn-secondary prev-btn">Zurück</button>
-                    <!-- Temporärer Sende-Button für Modul-Test -->
-                    <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);">send mail</button>
-                </div>
-            </div>
-
-        </form>
+            </form>
+        </div>
     </main>
 
     <script src="script.js"></script>
