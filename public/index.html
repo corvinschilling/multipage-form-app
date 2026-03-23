@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Page Form</title>
+    <title>Chantier Audit App</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
@@ -16,9 +16,9 @@
     </div>
 
     <main class="form-container glass-effect">
-        <h1 class="form-title">Umfrage</h1>
+        <h1 class="form-title">Audit Chantier - Teil 1</h1>
         
-        <!-- Progress Bar -->
+        <!-- Progress Bar (will be updated for 3 steps currently) -->
         <div class="progress-container">
             <div class="step active" id="step-indicator-1">1</div>
             <div class="step-line"></div>
@@ -32,29 +32,14 @@
 
         <form id="multiStepForm" novalidate>
             
-            <!-- SCHRITT 1 -->
+            <!-- SITE 1 -->
             <div class="form-step active" id="step-1">
-                <h2>Frage 1</h2>
+                <h2>Site 1</h2>
                 
-                <div class="radio-options input-group">
-                    <label class="radio-card">
-                        <input type="radio" name="question1" value="Ja" required>
-                        <span class="card-content">Ja</span>
-                    </label>
-                    <label class="radio-card">
-                        <input type="radio" name="question1" value="Nein">
-                        <span class="card-content">Nein</span>
-                    </label>
-                    <span class="error-text">Bitte wähle eine Option.</span>
-                </div>
-
-                <div class="photo-upload">
-                    <label for="photo1" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen</label>
-                    <input type="file" id="photo1" accept="image/*" capture="environment" style="display: none;">
-                    <div class="photo-preview-container hidden" id="preview-container-1">
-                        <img id="preview-img-1" src="" alt="Vorschau" class="photo-preview">
-                        <button type="button" class="btn-remove-photo" data-step="1">✖</button>
-                    </div>
+                <div class="input-group">
+                    <label for="nrChantier">nr.chantier * (9-stellige Nummer)</label>
+                    <input type="text" id="nrChantier" name="nrChantier" required pattern="^\d{9}$" placeholder="123456789" title="Bitte genau 9 Ziffern eingeben" maxlength="9">
+                    <span class="error-text">Feld erfordert genau 9 Ziffern.</span>
                 </div>
                 
                 <div class="button-group right">
@@ -62,28 +47,83 @@
                 </div>
             </div>
 
-            <!-- SCHRITT 2 -->
+            <!-- SITE 2 -->
             <div class="form-step" id="step-2">
-                <h2>Frage 2</h2>
+                <h2>Site 2</h2>
 
-                <div class="radio-options input-group">
-                    <label class="radio-card">
-                        <input type="radio" name="question2" value="Ja" required>
-                        <span class="card-content">Ja</span>
-                    </label>
-                    <label class="radio-card">
-                        <input type="radio" name="question2" value="Nein">
-                        <span class="card-content">Nein</span>
-                    </label>
-                    <span class="error-text">Bitte wähle eine Option.</span>
+                <!-- Question 2A -->
+                <div class="question-block">
+                    <label>Accès et sécurité: *</label>
+                    <div class="radio-options input-group">
+                        <label class="radio-card">
+                            <input type="radio" name="accesSecurite" value="pas necessaire" required>
+                            <span class="card-content">pas nécessaire</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="accesSecurite" value="existant">
+                            <span class="card-content">existant</span>
+                        </label>
+                        <span class="error-text">Bitte wähle eine Option.</span>
+                    </div>
+
+                    <!-- Sub Options (Hidden by default) -->
+                    <div id="accesSecuriteSubGroup" class="hidden">
+                        <label>Unteroptionen (existant): *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="accesSecuriteSub" value="Manque">
+                                <span class="card-content">Manque</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="accesSecuriteSub" value="Insuffisant">
+                                <span class="card-content">Insuffisant</span>
+                            </label>
+                            <span class="error-text">Bitte eine Unteroption wählen.</span>
+                        </div>
+                    </div>
+
+                    <!-- Photo Upload (Always required for Accès et sécurité) -->
+                    <div class="photo-upload input-group">
+                        <label for="photoAcces" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen *</label>
+                        <input type="file" id="photoAcces" accept="image/*" capture="environment" style="display: none;" required>
+                        <div class="photo-preview-container hidden" id="preview-container-acces">
+                            <img id="preview-img-acces" src="" alt="Vorschau" class="photo-preview">
+                            <button type="button" class="btn-remove-photo" data-target="photoAcces">✖</button>
+                        </div>
+                        <span class="error-text">Ein Foto ist zwingend erforderlich!</span>
+                    </div>
                 </div>
 
-                <div class="photo-upload">
-                    <label for="photo2" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen</label>
-                    <input type="file" id="photo2" accept="image/*" capture="environment" style="display: none;">
-                    <div class="photo-preview-container hidden" id="preview-container-2">
-                        <img id="preview-img-2" src="" alt="Vorschau" class="photo-preview">
-                        <button type="button" class="btn-remove-photo" data-step="2">✖</button>
+                <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                <!-- Question 2B -->
+                <div class="question-block">
+                    <label>Consignes de sécurité visibles: *</label>
+                    <div class="radio-options input-group">
+                        <label class="radio-card">
+                            <input type="radio" name="consignesVisibles" value="existant" required>
+                            <span class="card-content">existant</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="consignesVisibles" value="manque">
+                            <span class="card-content">manque</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="consignesVisibles" value="Illisible/non visible">
+                            <span class="card-content">Illisible/non visible</span>
+                        </label>
+                        <span class="error-text">Bitte wähle eine Option.</span>
+                    </div>
+
+                    <!-- Photo Upload (Required ONLY IF Illisible/non visible) -->
+                    <div id="consignesPhotoGroup" class="photo-upload input-group hidden">
+                        <label for="photoConsignes" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen *</label>
+                        <input type="file" id="photoConsignes" accept="image/*" capture="environment" style="display: none;">
+                        <div class="photo-preview-container hidden" id="preview-container-consignes">
+                            <img id="preview-img-consignes" src="" alt="Vorschau" class="photo-preview">
+                            <button type="button" class="btn-remove-photo" data-target="photoConsignes">✖</button>
+                        </div>
+                        <span class="error-text">Bei dieser Option ist ein Foto zwingend erforderlich!</span>
                     </div>
                 </div>
 
@@ -93,33 +133,29 @@
                 </div>
             </div>
 
-            <!-- SCHRITT 3 -->
+            <!-- SITE 3 -->
             <div class="form-step" id="step-3">
-                <h2>Frage 3</h2>
-
-                <div class="radio-options input-group">
-                    <label class="radio-card">
-                        <input type="radio" name="question3" value="Ja" required>
-                        <span class="card-content">Ja</span>
-                    </label>
-                    <label class="radio-card">
-                        <input type="radio" name="question3" value="Nein">
-                        <span class="card-content">Nein</span>
-                    </label>
-                    <span class="error-text">Bitte wähle eine Option.</span>
-                </div>
-
-                <div class="photo-upload">
-                    <label for="photo3" class="btn btn-secondary photo-btn">📸 Foto aufnehmen / anhängen</label>
-                    <input type="file" id="photo3" accept="image/*" capture="environment" style="display: none;">
-                    <div class="photo-preview-container hidden" id="preview-container-3">
-                        <img id="preview-img-3" src="" alt="Vorschau" class="photo-preview">
-                        <button type="button" class="btn-remove-photo" data-step="3">✖</button>
+                <h2>Site 3</h2>
+                
+                <div class="question-block">
+                    <label>Matériaux et fabrication:</label>
+                    <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1rem;">Envoyer des photos de la zone de stockage (le matériel doit etre visible). Hier können mehrere Fotos hinzugefügt werden.</p>
+                    
+                    <div class="photo-upload input-group">
+                        <!-- 'multiple' allows selecting multiple files -->
+                        <label for="photoMateriaux" class="btn btn-secondary photo-btn">📸 Fotos aufnehmen / anhängen</label>
+                        <input type="file" id="photoMateriaux" accept="image/*" capture="environment" multiple style="display: none;">
+                        
+                        <!-- Gallery for multiple photos -->
+                        <div class="photo-gallery" id="gallery-materiaux" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
+                            <!-- Previews will be injected here via JS -->
+                        </div>
                     </div>
                 </div>
 
                 <div class="button-group between">
                     <button type="button" class="btn btn-secondary prev-btn">Zurück</button>
+                    <!-- Temporärer Sende-Button für Modul-Test -->
                     <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);">send mail</button>
                 </div>
             </div>
