@@ -246,11 +246,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (group && group.classList.contains('error')) {
                 group.classList.remove('error');
             }
+            if (messageBox && !messageBox.classList.contains('hidden')) {
+                messageBox.classList.add('hidden');
+            }
         });
     });
 
     nextBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            if (messageBox && !messageBox.classList.contains('hidden')) {
+                messageBox.classList.add('hidden');
+            }
             if (validateStep(currentStep)) {
                 currentStep++;
                 updateFormSteps();
@@ -261,6 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     prevBtns.forEach(btn => {
         btn.addEventListener('click', () => {
+            if (messageBox && !messageBox.classList.contains('hidden')) {
+                messageBox.classList.add('hidden');
+            }
             currentStep--;
             updateFormSteps();
             updateProgressbar();

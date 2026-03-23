@@ -12,6 +12,10 @@
     --input-bg: rgba(15, 23, 42, 0.5);
 }
 
+.hidden {
+    display: none !important;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -101,6 +105,7 @@ body {
     font-size: 1.8rem;
     background: linear-gradient(to right, #fff, #94a3b8);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -114,14 +119,15 @@ body {
 }
 
 .step {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: var(--secondary-color);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
     border: 1px solid var(--glass-border);
 }
