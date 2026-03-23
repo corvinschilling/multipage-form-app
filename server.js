@@ -36,6 +36,8 @@ app.post('/api/submit', async (req, res) => {
             substancesSub,
             machinesOutils,
             epi,
+            aideLevage,
+            aideLevageSub,
             photos 
         } = req.body;
 
@@ -69,6 +71,7 @@ app.post('/api/submit', async (req, res) => {
             if (photos.photoAcces) processPhoto(photos.photoAcces, 'Accès et sécurité');
             if (photos.photoConsignes) processPhoto(photos.photoConsignes, 'Consignes de sécurité');
             if (photos.photoStockage) processPhoto(photos.photoStockage, 'Stockage correct');
+            if (photos.photoDefaut) processPhoto(photos.photoDefaut, 'Défaut de levage');
             
             if (photos.photoMateriaux && Array.isArray(photos.photoMateriaux)) {
                 photos.photoMateriaux.forEach((base64Data, index) => {
@@ -97,7 +100,11 @@ app.post('/api/submit', async (req, res) => {
             <p><strong>Machines et outils:</strong> ${(machinesOutils && machinesOutils.length > 0) ? machinesOutils.join(', ') : 'Aucun'}</p>
             
             <hr />
-            <p><strong>Equipement de protection individuelle (EPI):</strong> ${epi || 'Non spécifié'}</p>
+            <p><strong>Equipement de protection individuelle (EPI) :</strong> ${epi || 'Non spécifié'}</p>
+            
+            <hr />
+            <p><strong>Aide au levage et au transport:</strong> ${aideLevage || 'Non spécifié'}</p>
+            ${(aideLevageSub && aideLevageSub.length > 0) ? `<p><strong>Détails levage:</strong> ${aideLevageSub.join(', ')}</p>` : ''}
 
             <hr />
             <h2>Photos jointes</h2>

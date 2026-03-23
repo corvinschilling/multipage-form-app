@@ -16,11 +16,11 @@
     </div>
 
     <main class="form-container glass-effect">
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <h1 class="form-title" style="margin-bottom: 0.2rem; font-size: 2.2rem; letter-spacing: 1px;">LAMPERTZ</h1>
-            <h2 style="font-size: 1.1rem; font-weight: 300; letter-spacing: 3px; color: #cbd5e1; text-transform: uppercase;">Stone Designer</h2>
-            <div style="width: 40px; height: 3px; background: var(--primary-color); margin: 1rem auto; border-radius: 2px;"></div>
-            <h3 style="font-size: 1.1rem; font-weight: 500; color: #fff;">Audit Chantier</h3>
+        <div style="text-align: center; margin-bottom: 2.5rem;">
+            <h1 class="form-title" style="margin-bottom: 0; font-size: 3.5rem; letter-spacing: 0px; text-transform: lowercase; font-weight: 300; text-shadow: 0px 0px 10px rgba(0,200,255,0.4); font-family: 'Century Gothic', Arial, sans-serif;">lampertz</h1>
+            <h2 style="font-size: 1.1rem; font-weight: 400; letter-spacing: 1px; color: #00e5ff; text-transform: lowercase; margin-top: -10px; margin-left: 60px;">stonedesigner</h2>
+            <div style="width: 50px; height: 3px; background: linear-gradient(to right, #0066ff, #00e5ff); margin: 1.5rem auto 1rem auto; border-radius: 2px; box-shadow: 0 0 10px #00e5ff;"></div>
+            <h3 style="font-size: 1.1rem; font-weight: 500; color: #fff; text-transform: uppercase; letter-spacing: 2px;">Audit Chantier</h3>
         </div>
         
         <!-- Language Selection -->
@@ -282,9 +282,59 @@
                         </div>
                     </div>
 
+                    <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <!-- Question 6B -->
+                    <div class="question-block">
+                        <label>Aide au levage et au transport: *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="aideLevage" value="non requis" required>
+                                <span class="card-content">non requis</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="aideLevage" value="oui">
+                                <span class="card-content">oui</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Sub Options (Hidden by default) -->
+                        <div id="aideLevageSubGroup" class="hidden is-checkbox-group">
+                            <label>Détails (oui): *</label>
+                            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">Plusieurs choix possibles</p>
+                            <div class="checkbox-options input-group radio-options">
+                                <label class="radio-card">
+                                    <input type="checkbox" name="aideLevageSub" value="Défaut" id="chk-defaut">
+                                    <span class="card-content">Défaut</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="aideLevageSub" value="Inadapté">
+                                    <span class="card-content">Inadapté</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="aideLevageSub" value="Non utilisé par les employés">
+                                    <span class="card-content">Non utilisé par les employés</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner au moins une option.</span>
+                            </div>
+
+                            <!-- Photo Upload for Défaut -->
+                            <div id="defautPhotoGroup" class="photo-upload input-group hidden" style="margin-top: 1rem;">
+                                <label for="photoDefaut" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                                <input type="file" id="photoDefaut" accept="image/*" capture="environment" style="display: none;">
+                                <div class="photo-preview-container hidden" id="preview-container-defaut">
+                                    <img id="preview-img-defaut" src="" alt="Aperçu" class="photo-preview">
+                                    <button type="button" class="btn-remove-photo" data-target="photoDefaut">✖</button>
+                                </div>
+                                <span class="error-text">Une photo est obligatoire pour cette option !</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="button-group between">
                         <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
-                        <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #d4af37 0%, #b5952f 100%);">Soumettre</button>
+                        <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #0066ff 0%, #00d9ff 100%); color: #fff; font-weight: 600;">Soumettre</button>
                     </div>
                 </div>
 

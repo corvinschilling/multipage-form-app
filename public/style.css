@@ -1,15 +1,15 @@
 :root {
-    --bg-color: #0d1117; /* Very dark slate, almost black */
+    --bg-color: #020617; /* Extreme dark midnight blue */
     --text-color: #f8fafc;
-    --glass-bg: rgba(20, 25, 34, 0.6);
-    --glass-border: rgba(212, 175, 55, 0.2); /* Subtle gold border */
-    --primary-color: #d4af37; /* Metallic Gold */
-    --primary-hover: #b5952f;
-    --secondary-color: rgba(255, 255, 255, 0.08);
-    --secondary-hover: rgba(255, 255, 255, 0.2);
+    --glass-bg: rgba(0, 20, 50, 0.4); /* Deep blue tint for glass */
+    --glass-border: rgba(0, 162, 255, 0.2);
+    --primary-color: #0066ff; /* Electric blue */
+    --primary-hover: #004ecc;
+    --secondary-color: rgba(0, 150, 255, 0.1);
+    --secondary-hover: rgba(0, 150, 255, 0.2);
     --error-color: #ef4444;
     --success-color: #10b981;
-    --input-bg: rgba(15, 23, 42, 0.5);
+    --input-bg: rgba(0, 10, 30, 0.6);
 }
 
 .hidden {
@@ -54,7 +54,7 @@ body {
 .shape-1 {
     width: 400px;
     height: 400px;
-    background: #d4af37;
+    background: #0011ff; /* Deep glowing blue */
     top: -100px;
     left: -100px;
 }
@@ -62,7 +62,7 @@ body {
 .shape-2 {
     width: 300px;
     height: 300px;
-    background: #1e293b;
+    background: #00d9ff; /* Glowing cyan */
     bottom: -50px;
     right: -50px;
     animation-delay: -5s;
@@ -71,7 +71,7 @@ body {
 .shape-3 {
     width: 250px;
     height: 250px;
-    background: #2dd4bf; /* Subtle teal/slate accent */
+    background: #0066ff; /* Mid electric blue */
     top: 50%;
     left: 40%;
     transform: translate(-50%, -50%);
@@ -101,9 +101,9 @@ body {
 .form-title {
     text-align: center;
     margin-bottom: 2rem;
-    font-weight: 600;
+    font-weight: 300;
     font-size: 1.8rem;
-    background: linear-gradient(to right, #fef08a, #d4af37);
+    background: #ffffff; /* Bright white like the logo */
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -211,8 +211,8 @@ input, select, textarea {
 }
 
 input:focus, select:focus, textarea:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    border-color: #00d9ff;
+    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.2);
 }
 
 input::placeholder, textarea::placeholder {
@@ -269,14 +269,14 @@ select option {
 
 .btn-primary {
     background: var(--primary-color);
-    color: #111; /* Dark text on gold button */
-    box-shadow: 0 4px 14px 0 rgba(212, 175, 55, 0.39);
+    color: #fff; /* White text on blue button */
+    box-shadow: 0 4px 14px 0 rgba(0, 102, 255, 0.4);
 }
 
 .btn-primary:hover {
     background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+    box-shadow: 0 6px 20px rgba(0, 102, 255, 0.5);
 }
 
 .btn-secondary {
@@ -381,9 +381,9 @@ select option {
 }
 
 .radio-card input:checked + .card-content {
-    border-color: var(--primary-color);
-    background: rgba(212, 175, 55, 0.15);
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    border-color: #00d9ff;
+    background: rgba(0, 217, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
 }
 
 .input-group.error .card-content {

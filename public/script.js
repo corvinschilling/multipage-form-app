@@ -19,9 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Store Base64 photos
     let photoData = {
         photoAcces: null,
-        photoConsignes: null,
+        photoConseignes: null,
         photoMateriaux: [],
-        photoStockage: null
+        photoStockage: null,
+        photoDefaut: null
     };
 
     // Check saved language
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle Single Photo Uploads
-    ['photoAcces', 'photoConsignes', 'photoStockage'].forEach(id => {
+    ['photoAcces', 'photoConsignes', 'photoStockage', 'photoDefaut'].forEach(id => {
         const input = document.getElementById(id);
         if(!input) return;
         const previewContainer = document.getElementById(`preview-container-${id.replace('photo', '').toLowerCase()}`);
@@ -239,6 +240,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const aideLevageRadios = document.querySelectorAll('input[name="aideLevage"]');
+    const aideLevageSubGroup = document.getElementById('aideLevageSubGroup');
+    const aideLevageSubCheckboxes = document.querySelectorAll('input[name="aideLevageSub"]');
+    const defautPhotoGroup = document.getElementById('defautPhotoGroup');
+    const chkDefaut = document.getElementById('chk-defaut');
+
+    aideLevageRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'oui') {
+                aideLevageSubGroup.classList.remove('hidden');
+                aideLevageSubGroup.classList.add('is-required');
+            } else {
+                aideLevageSubGroup.classList.add('hidden');
+                aideLevageSubGroup.classList.remove('is-required');
+                aideLevageSubCheckboxes.forEach(c => c.checked = false);
+                defautPhotoGroup.classList.add('hidden');
+                defautPhotoGroup.classList.remove('is-required');
+                document.getElementById('photoDefaut').value = '';
+                photoData.photoDefaut = null;
+                if(document.getElementById('preview-container-defaut')) {
+                    document.getElementById('preview-container-defaut').classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    if (chkDefaut) {
+        chkDefaut.addEventListener('change', () => {
+            if (chkDefaut.checked) {
+                defautPhotoGroup.classList.remove('hidden');
+                defautPhotoGroup.classList.add('is-required');
+            } else {
+                defautPhotoGroup.classList.add('hidden');
+                defautPhotoGroup.classList.remove('is-required');
+                document.getElementById('photoDefaut').value = '';
+                photoData.photoDefaut = null;
+                if(document.getElementById('preview-container-defaut')) {
+                    document.getElementById('preview-container-defaut').classList.add('hidden');
+                }
+            }
+        });
+    }
+
     const inputs = document.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
         input.addEventListener('input', () => {
@@ -363,8 +407,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     if(cbGroup) cbGroup.classList.remove('error');
                 }
-            } else if(group.id === 'stockagePhotoGroup') {
-                if(!photoData.photoStockage) {
+            } else if(group.id === 'stockagePhotoGroup' || group.id === 'defautPhotoGroup') {
+                const photoKey = group.id === 'stockagePhotoGroup' ? photoData.photoStockage : photoData.photoDefaut;
+                if(!photoKey) {
                     group.classList.add('error');
                     isValid = false;
                 } else {
@@ -435,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ensure checkboxes are grouped correctly as arrays
         const machinesOutils = formData.getAll('machinesOutils');
         const substancesSub = formData.getAll('substancesSub');
+        const aideLevageSub = formData.getAll('aideLevageSub');
 
         const data = {
             nrChantier: formData.get('nrChantier'),
@@ -445,6 +491,8 @@ document.addEventListener('DOMContentLoaded', () => {
             substancesSub: substancesSub,
             machinesOutils: machinesOutils,
             epi: formData.get('epi'),
+            aideLevage: formData.get('aideLevage'),
+            aideLevageSub: aideLevageSub,
             photos: photoData
         };
 
