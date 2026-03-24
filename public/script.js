@@ -16,13 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentStep = 0;
     
-    // Store Base64 photos
     let photoData = {
         photoAcces: null,
-        photoConseignes: null,
+        photoConsignes: null,
         photoMateriaux: [],
         photoStockage: null,
-        photoDefaut: null
+        photoDefaut: null,
+        photoDomaine: [],
+        photoDechets: null,
+        photoRemarques: []
     };
 
     // Check saved language
@@ -84,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Handle Single Photo Uploads
-    ['photoAcces', 'photoConsignes', 'photoStockage', 'photoDefaut'].forEach(id => {
+    ['photoAcces', 'photoConsignes', 'photoStockage', 'photoDefaut', 'photoDechets'].forEach(id => {
         const input = document.getElementById(id);
         if(!input) return;
         const previewContainer = document.getElementById(`preview-container-${id.replace('photo', '').toLowerCase()}`);
@@ -156,6 +158,95 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             photoMateriaux.value = '';
+        });
+    }
+
+    const photoDomaineInput = document.getElementById('photoDomaine');
+    const galleryDomaine = document.getElementById('gallery-domaine');
+    
+    if(photoDomaineInput) {
+        photoDomaineInput.addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            for(const file of files) {
+                try {
+                    const base64String = await resizeImage(file);
+                    photoData.photoDomaine.push(base64String);
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'photo-preview-container';
+                    wrapper.style.display = 'inline-block';
+                    
+                    const img = document.createElement('img');
+                    img.src = base64String;
+                    img.className = 'photo-preview';
+                    img.style.height = '100px';
+                    img.style.width = 'auto';
+                    
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn-remove-photo';
+                    btn.innerHTML = '✖';
+                    btn.onclick = () => {
+                        galleryDomaine.removeChild(wrapper);
+                        photoData.photoDomaine.splice(photoData.photoDomaine.indexOf(base64String), 1);
+                        
+                        if(photoData.photoDomaine.length === 0) {
+                            photoDomaineInput.closest('.photo-upload').classList.add('error');
+                        }
+                    };
+                    
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(btn);
+                    galleryDomaine.appendChild(wrapper);
+                    
+                    photoDomaineInput.closest('.photo-upload').classList.remove('error');
+                } catch(error) {
+                    console.error(error);
+                }
+            }
+            photoDomaineInput.value = '';
+        });
+    }
+
+    const photoRemarques = document.getElementById('photoRemarques');
+    const galleryRemarques = document.getElementById('gallery-remarques');
+    
+    if(photoRemarques) {
+        photoRemarques.addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            for(const file of files) {
+                try {
+                    const base64String = await resizeImage(file);
+                    photoData.photoRemarques.push(base64String);
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'photo-preview-container';
+                    wrapper.style.display = 'inline-block';
+                    
+                    const img = document.createElement('img');
+                    img.src = base64String;
+                    img.className = 'photo-preview';
+                    img.style.height = '100px';
+                    img.style.width = 'auto';
+                    
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn-remove-photo';
+                    btn.innerHTML = '✖';
+                    btn.onclick = () => {
+                        galleryRemarques.removeChild(wrapper);
+                        photoData.photoRemarques.splice(photoData.photoRemarques.indexOf(base64String), 1);
+                    };
+                    
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(btn);
+                    galleryRemarques.appendChild(wrapper);
+
+                } catch(error) {
+                    console.error(error);
+                }
+            }
+            photoRemarques.value = '';
         });
     }
 
@@ -283,6 +374,79 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Steps 7 & 8 Conditional Logic ---
+
+    const dechetsRadios = document.querySelectorAll('input[name="dechetsChantier"]');
+    const dechetsPhotoGroup = document.getElementById('dechetsPhotoGroup');
+    
+    dechetsRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'non') {
+                dechetsPhotoGroup.classList.remove('hidden');
+                dechetsPhotoGroup.classList.add('is-required');
+            } else {
+                dechetsPhotoGroup.classList.add('hidden');
+                dechetsPhotoGroup.classList.remove('is-required');
+                document.getElementById('photoDechets').value = '';
+                photoData.photoDechets = null;
+                if(document.getElementById('preview-container-dechets')) {
+                    document.getElementById('preview-container-dechets').classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    const materielRadios = document.querySelectorAll('input[name="materielSecours"]');
+    const materielSubGroup = document.getElementById('materielSecoursSubGroup');
+    const materielSubCheckboxes = document.querySelectorAll('input[name="materielSecoursSub"]');
+    
+    materielRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'non') {
+                materielSubGroup.classList.remove('hidden');
+                materielSubGroup.classList.add('is-required');
+            } else {
+                materielSubGroup.classList.add('hidden');
+                materielSubGroup.classList.remove('is-required');
+                materielSubCheckboxes.forEach(c => c.checked = false);
+            }
+        });
+    });
+
+    const echafaudagesRadios = document.querySelectorAll('input[name="echafaudages"]');
+    const echafaudagesSubGroup = document.getElementById('echafaudagesSubGroup');
+    const echafaudagesSubCheckboxes = document.querySelectorAll('input[name="echafaudagesSub"]');
+    const modificationsSubGroup = document.getElementById('modificationsSubGroup');
+    const modificationsSubCheckboxes = document.querySelectorAll('input[name="modificationsSub"]');
+
+    echafaudagesRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'oui') {
+                echafaudagesSubGroup.classList.remove('hidden');
+                echafaudagesSubGroup.classList.add('is-required');
+                
+                modificationsSubGroup.classList.add('hidden');
+                modificationsSubGroup.classList.remove('is-required');
+                modificationsSubCheckboxes.forEach(c => c.checked = false);
+            } else if (radio.value === 'Modifications apportées') {
+                modificationsSubGroup.classList.remove('hidden');
+                modificationsSubGroup.classList.add('is-required');
+                
+                echafaudagesSubGroup.classList.add('hidden');
+                echafaudagesSubGroup.classList.remove('is-required');
+                echafaudagesSubCheckboxes.forEach(c => c.checked = false);
+            } else {
+                echafaudagesSubGroup.classList.add('hidden');
+                echafaudagesSubGroup.classList.remove('is-required');
+                echafaudagesSubCheckboxes.forEach(c => c.checked = false);
+                
+                modificationsSubGroup.classList.add('hidden');
+                modificationsSubGroup.classList.remove('is-required');
+                modificationsSubCheckboxes.forEach(c => c.checked = false);
+            }
+        });
+    });
+
     const inputs = document.querySelectorAll('input, select, textarea');
     inputs.forEach(input => {
         input.addEventListener('input', () => {
@@ -396,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     group.classList.remove('error');
                 }
-            } else if(group.id === 'substancesSubGroup' || group.classList.contains('is-checkbox-group')) {
+            } else if(group.id === 'substancesSubGroup' || group.id === 'materielSecoursSubGroup' || group.id === 'echafaudagesSubGroup' || group.id === 'modificationsSubGroup' || group.classList.contains('is-checkbox-group')) {
                 // If it's a checkbox conditionally required group
                 const checkboxes = group.querySelectorAll('input[type="checkbox"]');
                 const isChecked = Array.from(checkboxes).some(c => c.checked);
@@ -407,8 +571,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     if(cbGroup) cbGroup.classList.remove('error');
                 }
-            } else if(group.id === 'stockagePhotoGroup' || group.id === 'defautPhotoGroup') {
-                const photoKey = group.id === 'stockagePhotoGroup' ? photoData.photoStockage : photoData.photoDefaut;
+            } else if(group.id === 'stockagePhotoGroup' || group.id === 'defautPhotoGroup' || group.id === 'dechetsPhotoGroup') {
+                let photoKey;
+                if(group.id === 'stockagePhotoGroup') photoKey = photoData.photoStockage;
+                else if(group.id === 'defautPhotoGroup') photoKey = photoData.photoDefaut;
+                else if(group.id === 'dechetsPhotoGroup') photoKey = photoData.photoDechets;
+
                 if(!photoKey) {
                     group.classList.add('error');
                     isValid = false;
@@ -424,6 +592,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if(accesPhotoGroup) {
                 const groupParent = accesPhotoGroup.closest('.photo-upload');
                 if (!photoData.photoAcces) {
+                    groupParent.classList.add('error');
+                    isValid = false;
+                } else {
+                    groupParent.classList.remove('error');
+                }
+            }
+        } else if(stepIndex === 6) { // Step 7 - Domaine photo
+            const domainePhotoGroup = document.getElementById('photoDomaine');
+            if(domainePhotoGroup) {
+                const groupParent = domainePhotoGroup.closest('.photo-upload');
+                if (photoData.photoDomaine.length === 0) {
                     groupParent.classList.add('error');
                     isValid = false;
                 } else {
@@ -481,6 +660,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const machinesOutils = formData.getAll('machinesOutils');
         const substancesSub = formData.getAll('substancesSub');
         const aideLevageSub = formData.getAll('aideLevageSub');
+        const materielSecoursSub = formData.getAll('materielSecoursSub');
+        const echafaudagesSub = formData.getAll('echafaudagesSub');
+        const modificationsSub = formData.getAll('modificationsSub');
 
         const data = {
             nrChantier: formData.get('nrChantier'),
@@ -493,6 +675,14 @@ document.addEventListener('DOMContentLoaded', () => {
             epi: formData.get('epi'),
             aideLevage: formData.get('aideLevage'),
             aideLevageSub: aideLevageSub,
+            installationsSanitaires: formData.get('installationsSanitaires'),
+            materielSecours: formData.get('materielSecours'),
+            materielSecoursSub: materielSecoursSub,
+            dechetsChantier: formData.get('dechetsChantier'),
+            echafaudages: formData.get('echafaudages'),
+            echafaudagesSub: echafaudagesSub,
+            modificationsSub: modificationsSub,
+            autresRemarques: formData.get('autresRemarques'),
             photos: photoData
         };
 

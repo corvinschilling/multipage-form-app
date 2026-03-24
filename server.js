@@ -38,6 +38,14 @@ app.post('/api/submit', async (req, res) => {
             epi,
             aideLevage,
             aideLevageSub,
+            installationsSanitaires,
+            materielSecours,
+            materielSecoursSub,
+            dechetsChantier,
+            echafaudages,
+            echafaudagesSub,
+            modificationsSub,
+            autresRemarques,
             photos 
         } = req.body;
 
@@ -72,10 +80,22 @@ app.post('/api/submit', async (req, res) => {
             if (photos.photoConsignes) processPhoto(photos.photoConsignes, 'Consignes de sécurité');
             if (photos.photoStockage) processPhoto(photos.photoStockage, 'Stockage correct');
             if (photos.photoDefaut) processPhoto(photos.photoDefaut, 'Défaut de levage');
+            if (photos.photoDechets) processPhoto(photos.photoDechets, 'Déchets de chantier');
+            
+            if (photos.photoDomaine && Array.isArray(photos.photoDomaine)) {
+                photos.photoDomaine.forEach((base64Data, index) => {
+                    processPhoto(base64Data, `Domaine d'activité ${index + 1}`);
+                });
+            }
             
             if (photos.photoMateriaux && Array.isArray(photos.photoMateriaux)) {
                 photos.photoMateriaux.forEach((base64Data, index) => {
                     processPhoto(base64Data, `Matériaux et fabrication ${index + 1}`);
+                });
+            }
+            if (photos.photoRemarques && Array.isArray(photos.photoRemarques)) {
+                photos.photoRemarques.forEach((base64Data, index) => {
+                    processPhoto(base64Data, `Autres remarques ${index + 1}`);
                 });
             }
         }
@@ -105,6 +125,25 @@ app.post('/api/submit', async (req, res) => {
             <hr />
             <p><strong>Aide au levage et au transport:</strong> ${aideLevage || 'Non spécifié'}</p>
             ${(aideLevageSub && aideLevageSub.length > 0) ? `<p><strong>Détails levage:</strong> ${aideLevageSub.join(', ')}</p>` : ''}
+
+            <hr />
+            <p><strong>Domaine d'activité :</strong> (Voir photo jointe)</p>
+            
+            <p><strong>Déchets de chantier, emballages triés correctement :</strong> ${dechetsChantier || 'Non spécifié'}</p>
+            
+            <hr />
+            <p><strong>Installations sanitaires utilisables et hygiéniques :</strong> ${installationsSanitaires || 'Non spécifié'}</p>
+            
+            <p><strong>Matériel de premiers secours disponible :</strong> ${materielSecours || 'Non spécifié'}</p>
+            ${(materielSecoursSub && materielSecoursSub.length > 0) ? `<p><strong>Détails secours:</strong> ${materielSecoursSub.join(', ')}</p>` : ''}
+            
+            <hr />
+            <p><strong>Échafaudages sur place :</strong> ${echafaudages || 'Non spécifié'}</p>
+            ${(echafaudagesSub && echafaudagesSub.length > 0) ? `<p><strong>Détails échafaudages:</strong> ${echafaudagesSub.join(', ')}</p>` : ''}
+            ${(modificationsSub && modificationsSub.length > 0) ? `<p><strong>Modifications apportées:</strong> ${modificationsSub.join(', ')}</p>` : ''}
+            
+            <hr />
+            <p><strong>Autres remarques/observations/défauts :</strong><br/>${(autresRemarques || 'Aucune').replace(/\n/g, '<br/>')}</p>
 
             <hr />
             <h2>Photos jointes</h2>
