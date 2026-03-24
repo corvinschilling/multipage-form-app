@@ -481,6 +481,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentStep++;
                 updateFormSteps();
                 updateProgressbar();
+            } else {
+                const currentStepElement = formSteps[currentStep];
+                const firstError = currentStepElement.querySelector('.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
             }
         });
     });
@@ -669,7 +675,14 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!validateStep(currentStep)) return;
+        if (!validateStep(currentStep)) {
+            const currentStepElement = formSteps[currentStep];
+            const firstError = currentStepElement.querySelector('.error');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
 
         submitBtn.disabled = true;
         const orgText = submitBtn.innerHTML;
