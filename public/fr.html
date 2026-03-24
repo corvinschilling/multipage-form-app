@@ -96,7 +96,7 @@
                         <!-- Photo Upload (Always required for Accès et sécurité) -->
                         <div class="photo-upload input-group">
                             <label for="photoAcces" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
-                            <input type="file" id="photoAcces" accept="image/*" capture="environment" style="display: none;" required>
+                            <input type="file" id="photoAcces" accept="image/*" style="display: none;" required>
                             <div class="photo-preview-container hidden" id="preview-container-acces">
                                 <img id="preview-img-acces" src="" alt="Aperçu" class="photo-preview">
                                 <button type="button" class="btn-remove-photo" data-target="photoAcces">✖</button>
@@ -129,7 +129,7 @@
                         <!-- Photo Upload (Required ONLY IF Illisible/non visible) -->
                         <div id="consignesPhotoGroup" class="photo-upload input-group hidden">
                             <label for="photoConsignes" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
-                            <input type="file" id="photoConsignes" accept="image/*" capture="environment" style="display: none;">
+                            <input type="file" id="photoConsignes" accept="image/*" style="display: none;">
                             <div class="photo-preview-container hidden" id="preview-container-consignes">
                                 <img id="preview-img-consignes" src="" alt="Aperçu" class="photo-preview">
                                 <button type="button" class="btn-remove-photo" data-target="photoConsignes">✖</button>
@@ -152,7 +152,7 @@
                         
                         <div class="photo-upload input-group">
                             <label for="photoMateriaux" class="btn btn-secondary photo-btn">📸 Prendre / Joindre des photos *</label>
-                            <input type="file" id="photoMateriaux" accept="image/*" capture="environment" multiple style="display: none;" required>
+                            <input type="file" id="photoMateriaux" accept="image/*" multiple style="display: none;" required>
                             
                             <!-- Gallery -->
                             <div class="photo-gallery" id="gallery-materiaux" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
@@ -206,7 +206,7 @@
                             <!-- Photo Upload for stockage correct -->
                             <div id="stockagePhotoGroup" class="photo-upload input-group hidden" style="margin-top: 1rem;">
                                 <label for="photoStockage" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
-                                <input type="file" id="photoStockage" accept="image/*" capture="environment" style="display: none;">
+                                <input type="file" id="photoStockage" accept="image/*" style="display: none;">
                                 <div class="photo-preview-container hidden" id="preview-container-stockage">
                                     <img id="preview-img-stockage" src="" alt="Aperçu" class="photo-preview">
                                     <button type="button" class="btn-remove-photo" data-target="photoStockage">✖</button>
@@ -315,7 +315,7 @@
                             <!-- Photo Upload for Défaut -->
                             <div id="defautPhotoGroup" class="photo-upload input-group hidden" style="margin-top: 1rem;">
                                 <label for="photoDefaut" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
-                                <input type="file" id="photoDefaut" accept="image/*" capture="environment" style="display: none;">
+                                <input type="file" id="photoDefaut" accept="image/*" style="display: none;">
                                 <div class="photo-preview-container hidden" id="preview-container-defaut">
                                     <img id="preview-img-defaut" src="" alt="Aperçu" class="photo-preview">
                                     <button type="button" class="btn-remove-photo" data-target="photoDefaut">✖</button>
@@ -338,7 +338,7 @@
                         <label>Domaine d'activité : *</label>
                         <div class="photo-upload input-group">
                             <label for="photoDomaine" class="btn btn-secondary photo-btn">📸 Prendre / Joindre des photos *</label>
-                            <input type="file" id="photoDomaine" accept="image/*" multiple capture="environment" style="display: none;" required>
+                            <input type="file" id="photoDomaine" accept="image/*" multiple style="display: none;" required>
                             <div id="gallery-domaine" style="margin-top: 10px;"></div>
                             <span class="error-text">Une photo est obligatoire !</span>
                         </div>
@@ -364,7 +364,7 @@
                         <!-- Photo if "non" -->
                         <div id="dechetsPhotoGroup" class="photo-upload input-group hidden" style="margin-top: 1rem;">
                             <label for="photoDechets" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
-                            <input type="file" id="photoDechets" accept="image/*" capture="environment" style="display: none;">
+                            <input type="file" id="photoDechets" accept="image/*" style="display: none;">
                             <div class="photo-preview-container hidden" id="preview-container-dechets">
                                 <img id="preview-img-dechets" src="" alt="Aperçu" class="photo-preview">
                                 <button type="button" class="btn-remove-photo" data-target="photoDechets">✖</button>
@@ -511,7 +511,7 @@
                         
                         <div class="photo-upload input-group">
                             <label for="photoRemarques" class="btn btn-secondary photo-btn">📸 Prendre / Joindre des photos</label>
-                            <input type="file" id="photoRemarques" accept="image/*" capture="environment" multiple style="display: none;">
+                            <input type="file" id="photoRemarques" accept="image/*" multiple style="display: none;">
                             
                             <!-- Gallery -->
                             <div class="photo-gallery" id="gallery-remarques" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
