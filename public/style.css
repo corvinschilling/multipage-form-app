@@ -329,6 +329,10 @@ select option {
     transition: all 0.3s ease;
 }
 
+.card-content::first-letter {
+    text-transform: uppercase;
+}
+
 .radio-card:hover .card-content {
     border-color: rgba(255, 255, 255, 0.3);
     background: rgba(255, 255, 255, 0.1);

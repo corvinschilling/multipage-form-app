@@ -28,6 +28,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 app.post('/api/submit', async (req, res) => {
     try {
         const { 
+            lang,
             nrChantier, 
             accesSecurite, 
             accesSecuriteSub, 
@@ -51,7 +52,10 @@ app.post('/api/submit', async (req, res) => {
 
         // Basic backend validation
         if (!nrChantier || !accesSecurite || !consignesVisibles) {
-            return res.status(400).json({ success: false, message: 'Veuillez remplir tous les champs obligatoires !' });
+            const errorMsg = (lang === 'de') 
+                ? 'Bitte füllen Sie alle Pflichtfelder aus!' 
+                : 'Veuillez remplir tous les champs obligatoires !';
+            return res.status(400).json({ success: false, message: errorMsg });
         }
 
         // Process attachments
@@ -100,54 +104,139 @@ app.post('/api/submit', async (req, res) => {
             }
         }
 
+        const isDe = (lang === 'de');
+
+        // Translate Values
+        const tValDict = {
+            'oui': 'Ja',
+            'non': 'Nein',
+            'pas necessaire': 'Nicht erforderlich',
+            'existant': 'Vorhanden',
+            'Visible/lisible': 'Sichtbar/lesbar',
+            'Illisible/non visible': 'Unleserlich/nicht sichtbar',
+            'outillage propre, prêt à l\'emploi et complet': 'Werkzeuge sauber, einsatzbereit & vollständig',
+            'risque de trébuchement dû aux câbles': 'Stolpergefahr durch Kabel',
+            'électricité (câble défectueux, etc.)': 'Elektro (Kabel defekt etc.)',
+            'EPI en bon état et porté': 'PSA in Ordnung und getragen',
+            'absence d\'EPI': 'PSA fehlt',
+            'EPI incomplet': 'PSA unvollständig',
+            'EPI non porté': 'PSA wird nicht getragen',
+            'non requis': 'Nicht erforderlich',
+            'Défaut': 'Mangelhaft',
+            'Inadapté': 'Ungeeignet',
+            'Non utilisé par les employés': 'Wird von Mitarbeitern nicht genutzt',
+            'Manquant': 'Fehlt',
+            'Incomplet': 'Unvollständig',
+            'Expiré': 'Abgelaufen',
+            'Modifications apportées': 'Änderungen vorgenommen',
+            'Protocole de contrôle appose de manière visible': 'Prüfprotokoll sichtbar angebracht',
+            'Monte par du personnel forme en interne': 'Durch intern geschultes Personal aufgebaut',
+            'Oui, tout est documenté et approuvé': 'Ja, alles ist dokumentiert und freigegeben',
+            'Non, sécurité non respectée': 'Nein, Sicherheit nicht gegeben',
+        };
+
+        const tv = (val) => {
+            if (!isDe || !val) return val;
+            if (Array.isArray(val)) return val.map(v => tValDict[v] || v);
+            return tValDict[val] || val;
+        };
+
+        // Translated Variables
+        const t_accesSecurite = tv(accesSecurite);
+        const t_accesSecuriteSub = tv(accesSecuriteSub);
+        const t_consignesVisibles = tv(consignesVisibles);
+        const t_substancesDangereuses = tv(substancesDangereuses);
+        const t_substancesSub = tv(substancesSub);
+        const t_machinesOutils = tv(machinesOutils);
+        const t_epi = tv(epi);
+        const t_aideLevage = tv(aideLevage);
+        const t_aideLevageSub = tv(aideLevageSub);
+        const t_dechetsChantier = tv(dechetsChantier);
+        const t_installationsSanitaires = tv(installationsSanitaires);
+        const t_materielSecours = tv(materielSecours);
+        const t_materielSecoursSub = tv(materielSecoursSub);
+        const t_echafaudages = tv(echafaudages);
+        const t_echafaudagesSub = tv(echafaudagesSub);
+        const t_modificationsSub = tv(modificationsSub);
+
+        // Labels mapping
+        const lbl = {
+            title: isDe ? "Audit Bauvorhaben - Bericht" : "Audit Chantier - Rapport",
+            nrChantier: isDe ? "N° Bauvorhaben" : "N° Chantier",
+            acces: isDe ? "Zugang und Sicherheit" : "Accès et sécurité",
+            detailsExistant: isDe ? "Bemerkungen (vorhanden)" : "Détails (existant)",
+            consignes: isDe ? "Sicherheitsanweisungen sichtbar" : "Consignes de sécurité visibles",
+            substances: isDe ? "Gefahrstoffe" : "Substances dangereuses",
+            detailsSubstances: isDe ? "Details Gefahrstoffe" : "Détails substances",
+            machines: isDe ? "Maschinen und Werkzeuge" : "Machines et outils",
+            epi: isDe ? "Persönliche Schutzausrüstung (PSA)" : "Equipement de protection individuelle (EPI)",
+            levage: isDe ? "Hebe- und Transporthilfen" : "Aide au levage et au transport",
+            detailsLevage: isDe ? "Bemerkungen (Hebe/Transport)" : "Détails levage",
+            domaine: isDe ? "Tätigkeitsbereich" : "Domaine d'activité",
+            voirPhoto: isDe ? "(Siehe beigefügte Foto)" : "(Voir photo jointe)",
+            dechets: isDe ? "Baustellenabfall richtig getrennt" : "Déchets de chantier, emballages triés correctement",
+            sanitaires: isDe ? "Sanitäranlagen nutzbar & hygienisch in Ordnung" : "Installations sanitaires utilisables et hygiéniques",
+            secours: isDe ? "Erste Hilfe Material vorhanden" : "Matériel de premiers secours disponible",
+            detailsSecours: isDe ? "Bemerkungen (Erste Hilfe)" : "Détails secours",
+            echafaudages: isDe ? "Gerüste auf Bauvorhaben" : "Échafaudages sur place",
+            detailsEchaf: isDe ? "Bemerkungen (Gerüste)" : "Détails échafaudages",
+            modifications: isDe ? "Bemerkungen (Änderungen)" : "Modifications apportées",
+            autres: isDe ? "Sonstige Bemerkungen/Feststellungen/Mängel" : "Autres remarques/observations/défauts",
+            photosJointes: isDe ? "Beigefügte Fotos" : "Photos jointes",
+            aucunePhoto: isDe ? "Kein Foto hochgeladen." : "Aucune photo téléchargée.",
+            nonSpecifie: isDe ? "Nicht angegeben" : "Non spécifié",
+            aucun: isDe ? "Keine" : "Aucun",
+            aucune: isDe ? "Keine" : "Aucune"
+        };
+
         // Prepare Email Content
         const html = `
-            <h2>Audit Chantier - Rapport</h2>
+            <h2>${lbl.title}</h2>
             
-            <p><strong>N° Chantier:</strong> ${nrChantier}</p>
-            
-            <hr />
-            <p><strong>Accès et sécurité:</strong> ${accesSecurite}</p>
-            ${accesSecuriteSub ? `<p><strong>Détails (existant):</strong> ${accesSecuriteSub}</p>` : ''}
-            
-            <p><strong>Consignes de sécurité visibles:</strong> ${consignesVisibles}</p>
+            <p><strong>${lbl.nrChantier}:</strong> ${nrChantier}</p>
             
             <hr />
-            <p><strong>Substances dangereuses:</strong> ${substancesDangereuses || 'Non spécifié'}</p>
-            ${(substancesSub && substancesSub.length > 0) ? `<p><strong>Détails substances:</strong> ${substancesSub.join(', ')}</p>` : ''}
+            <p><strong>${lbl.acces}:</strong> ${t_accesSecurite}</p>
+            ${t_accesSecuriteSub ? `<p><strong>${lbl.detailsExistant}:</strong> ${t_accesSecuriteSub}</p>` : ''}
+            
+            <p><strong>${lbl.consignes}:</strong> ${t_consignesVisibles}</p>
             
             <hr />
-            <p><strong>Machines et outils:</strong> ${(machinesOutils && machinesOutils.length > 0) ? machinesOutils.join(', ') : 'Aucun'}</p>
+            <p><strong>${lbl.substances}:</strong> ${t_substancesDangereuses || lbl.nonSpecifie}</p>
+            ${(t_substancesSub && t_substancesSub.length > 0) ? `<p><strong>${lbl.detailsSubstances}:</strong> ${t_substancesSub.join(', ')}</p>` : ''}
             
             <hr />
-            <p><strong>Equipement de protection individuelle (EPI) :</strong> ${epi || 'Non spécifié'}</p>
+            <p><strong>${lbl.machines}:</strong> ${(t_machinesOutils && t_machinesOutils.length > 0) ? t_machinesOutils.join(', ') : lbl.aucun}</p>
             
             <hr />
-            <p><strong>Aide au levage et au transport:</strong> ${aideLevage || 'Non spécifié'}</p>
-            ${(aideLevageSub && aideLevageSub.length > 0) ? `<p><strong>Détails levage:</strong> ${aideLevageSub.join(', ')}</p>` : ''}
+            <p><strong>${lbl.epi}:</strong> ${t_epi || lbl.nonSpecifie}</p>
+            
+            <hr />
+            <p><strong>${lbl.levage}:</strong> ${t_aideLevage || lbl.nonSpecifie}</p>
+            ${(t_aideLevageSub && t_aideLevageSub.length > 0) ? `<p><strong>${lbl.detailsLevage}:</strong> ${t_aideLevageSub.join(', ')}</p>` : ''}
 
             <hr />
-            <p><strong>Domaine d'activité :</strong> (Voir photo jointe)</p>
+            <p><strong>${lbl.domaine}:</strong> ${lbl.voirPhoto}</p>
             
-            <p><strong>Déchets de chantier, emballages triés correctement :</strong> ${dechetsChantier || 'Non spécifié'}</p>
-            
-            <hr />
-            <p><strong>Installations sanitaires utilisables et hygiéniques :</strong> ${installationsSanitaires || 'Non spécifié'}</p>
-            
-            <p><strong>Matériel de premiers secours disponible :</strong> ${materielSecours || 'Non spécifié'}</p>
-            ${(materielSecoursSub && materielSecoursSub.length > 0) ? `<p><strong>Détails secours:</strong> ${materielSecoursSub.join(', ')}</p>` : ''}
+            <p><strong>${lbl.dechets}:</strong> ${t_dechetsChantier || lbl.nonSpecifie}</p>
             
             <hr />
-            <p><strong>Échafaudages sur place :</strong> ${echafaudages || 'Non spécifié'}</p>
-            ${(echafaudagesSub && echafaudagesSub.length > 0) ? `<p><strong>Détails échafaudages:</strong> ${echafaudagesSub.join(', ')}</p>` : ''}
-            ${(modificationsSub && modificationsSub.length > 0) ? `<p><strong>Modifications apportées:</strong> ${modificationsSub.join(', ')}</p>` : ''}
+            <p><strong>${lbl.sanitaires}:</strong> ${t_installationsSanitaires || lbl.nonSpecifie}</p>
+            
+            <p><strong>${lbl.secours}:</strong> ${t_materielSecours || lbl.nonSpecifie}</p>
+            ${(t_materielSecoursSub && t_materielSecoursSub.length > 0) ? `<p><strong>${lbl.detailsSecours}:</strong> ${t_materielSecoursSub.join(', ')}</p>` : ''}
             
             <hr />
-            <p><strong>Autres remarques/observations/défauts :</strong><br/>${(autresRemarques || 'Aucune').replace(/\n/g, '<br/>')}</p>
+            <p><strong>${lbl.echafaudages}:</strong> ${t_echafaudages || lbl.nonSpecifie}</p>
+            ${(t_echafaudagesSub && t_echafaudagesSub.length > 0) ? `<p><strong>${lbl.detailsEchaf}:</strong> ${t_echafaudagesSub.join(', ')}</p>` : ''}
+            ${(t_modificationsSub && t_modificationsSub.length > 0) ? `<p><strong>${lbl.modifications}:</strong> ${t_modificationsSub.join(', ')}</p>` : ''}
+            
+            <hr />
+            <p><strong>${lbl.autres}:</strong><br/>${(autresRemarques || lbl.aucune).replace(/\n/g, '<br/>')}</p>
 
             <hr />
-            <h2>Photos jointes</h2>
-            ${photosHtml || '<p>Aucune photo téléchargée.</p>'}
+            <h2>${lbl.photosJointes}</h2>
+            ${photosHtml || `<p>${lbl.aucunePhoto}</p>`}
         `;
 
         // Send Email
@@ -161,7 +250,10 @@ app.post('/api/submit', async (req, res) => {
 
         if (error) {
             console.error('Resend error:', error);
-            return res.status(500).json({ success: false, message: 'Fehler beim Senden der E-Mail über Resend.' });
+            const errorMsg = isDe 
+                ? 'Fehler beim Senden der E-Mail über Resend.' 
+                : 'Erreur lors de l\'envoi de l\'e-mail via Resend.';
+            return res.status(500).json({ success: false, message: errorMsg });
         }
 
         console.log('Message sent:', data);
@@ -171,7 +263,11 @@ app.post('/api/submit', async (req, res) => {
     } catch (error) {
         console.error('Error sending email:', error);
         // Error response
-        res.status(500).json({ success: false, message: 'Erreur serveur. Impossible de traiter l\'e-mail.' });
+        const isDeFallback = (req.body && req.body.lang === 'de');
+        const errorMsg = isDeFallback 
+            ? 'Serverfehler. E-Mail konnte nicht verarbeitet werden.' 
+            : 'Erreur serveur. Impossible de traiter l\'e-mail.';
+        res.status(500).json({ success: false, message: errorMsg });
     }
 });
 

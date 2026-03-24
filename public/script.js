@@ -16,6 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentStep = 0;
     
+    // Strict numeric formatting for nrChantier
+    const nrChantierInput = document.getElementById('nrChantier');
+    if (nrChantierInput) {
+        nrChantierInput.addEventListener('input', function() {
+            // Strip out any non-numeric characters in real-time
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    }
+    
     let photoData = {
         photoAcces: null,
         photoConsignes: null,
@@ -27,19 +36,24 @@ document.addEventListener('DOMContentLoaded', () => {
         photoRemarques: []
     };
 
-    // Language Handlers
-    if (langFrBtn) {
-        langFrBtn.addEventListener('click', () => {
-            langSelection.classList.add('hidden');
-            formContent.classList.remove('hidden');
-        });
-    }
+    const langInput = document.getElementById('form-lang');
+    const lang = langInput ? langInput.value : 'fr';
 
-    if (langDeBtn) {
-        langDeBtn.addEventListener('click', () => {
-            alert("La version allemande n'est pas encore prête.\nDie deutsche Version ist noch nicht verfügbar.");
-        });
-    }
+    const texts = {
+        fr: {
+            sending: '<span class="spinner"></span> Envoi...',
+            success: 'Envoyé avec succès !',
+            errorSend: 'Erreur lors de l\'envoi : ',
+            errorNet: 'Erreur réseau. Serveur injoignable.'
+        },
+        de: {
+            sending: '<span class="spinner"></span> Senden...',
+            success: 'Erfolgreich gesendet!',
+            errorSend: 'Fehler beim Senden : ',
+            errorNet: 'Netzwerkfehler. Server nicht erreichbar.'
+        }
+    };
+    const t = texts[lang];
 
     // Helper: Resize Image
     function resizeImage(file, maxWidth = 1200, maxHeight = 1200) {
@@ -139,11 +153,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.onclick = () => {
                         galleryMateriaux.removeChild(wrapper);
                         photoData.photoMateriaux.splice(photoData.photoMateriaux.indexOf(base64String), 1);
+                        
+                        if(photoData.photoMateriaux.length === 0) {
+                            photoMateriaux.closest('.photo-upload').classList.add('error');
+                        }
                     };
                     
                     wrapper.appendChild(img);
                     wrapper.appendChild(btn);
                     galleryMateriaux.appendChild(wrapper);
+                    
+                    photoMateriaux.closest('.photo-upload').classList.remove('error');
 
                 } catch(error) {
                     console.error(error);
@@ -590,6 +610,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     groupParent.classList.remove('error');
                 }
             }
+        } else if(stepIndex === 2) { // Step 3 - Materiaux photo
+            const materielPhotoGroup = document.getElementById('photoMateriaux');
+            if(materielPhotoGroup) {
+                const groupParent = materielPhotoGroup.closest('.photo-upload');
+                if (photoData.photoMateriaux.length === 0) {
+                    groupParent.classList.add('error');
+                    isValid = false;
+                } else {
+                    groupParent.classList.remove('error');
+                }
+            }
         } else if(stepIndex === 6) { // Step 7 - Domaine photo
             const domainePhotoGroup = document.getElementById('photoDomaine');
             if(domainePhotoGroup) {
@@ -642,7 +673,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         submitBtn.disabled = true;
         const orgText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<span class="spinner"></span> Envoi...';
+        submitBtn.innerHTML = t.sending;
         messageBox.classList.add('hidden');
         messageBox.className = 'message-box hidden';
 
@@ -657,6 +688,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const modificationsSub = formData.getAll('modificationsSub');
 
         const data = {
+            lang: lang,
             nrChantier: formData.get('nrChantier'),
             accesSecurite: formData.get('accesSecurite'),
             accesSecuriteSub: formData.get('accesSecuriteSub'),
@@ -690,15 +722,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok && result.success) {
-                showMessage('Envoyé avec succès !', 'success');
+                showMessage(t.success, 'success');
                 setTimeout(() => {
                     window.location.reload();
                 }, 2000);
             } else {
-                showMessage('Erreur lors de l\'envoi : ' + (result.message || ''), 'error');
+                showMessage(t.errorSend + (result.message || ''), 'error');
             }
         } catch (error) {
-            showMessage('Erreur réseau. Serveur injoignable.', 'error');
+            showMessage(t.errorNet, 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = orgText;

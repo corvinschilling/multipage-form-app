@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Chantier</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <main class="form-container glass-effect">
+        <div class="header-block" style="text-align: center; margin-bottom: 1rem; display: flex; flex-direction: column; align-items: center;">
+            <img src="logo_clean.png" alt="Lampertz Stone Designer" style="max-width: 180px; width: 100%; height: auto; filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.3)); margin-bottom: 0.2rem;">
+            <div class="divider-line" style="width: 30px; height: 1px; background: #00e5ff; margin: 0.5rem auto 0.4rem auto; box-shadow: 0 0 5px #00e5ff;"></div>
+            <h3 class="audit-title" style="margin: 0; font-size: 0.8rem; font-weight: 500; color: #fff; text-transform: uppercase; letter-spacing: 2px;">Audit Chantier</h3>
+        </div>
+        
+        <!-- Form content  -->
+        <div id="form-content">
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="step active" id="step-indicator-1">1</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-2">2</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-3">3</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-4">4</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-5">5</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-6">6</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-7">7</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-8">8</div>
+                <div class="step-line"></div>
+                <div class="step" id="step-indicator-9">9</div>
+            </div>
+
+            <!-- Success & Error Messages -->
+            <div id="message-box" class="message-box hidden"></div>
+
+            <form id="multiStepForm" novalidate>
+                <input type="hidden" name="lang" id="form-lang" value="fr">
+                
+                <!-- STEP 1 -->
+                <div class="form-step active" id="step-1">
+                    <div class="input-group">
+                        <label for="nrChantier">nr.chantier *</label>
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" id="nrChantier" name="nrChantier" required placeholder="Ex: 123456789" maxlength="9">
+                        <span class="error-text">Ce champ requiert exactement 9 chiffres.</span>
+                    </div>
+                    
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Retour</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="form-step" id="step-2">
+
+                    <!-- Question 2A -->
+                    <div class="question-block">
+                        <label>Accès et securité: *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="accesSecurite" value="pas necessaire" required>
+                                <span class="card-content">pas nécessaire</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="accesSecurite" value="existant">
+                                <span class="card-content">existant</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Sub Options (Hidden by default) -->
+                        <div id="accesSecuriteSubGroup" class="hidden">
+                            <label>Détails (existant): *</label>
+                            <div class="radio-options input-group">
+                                <label class="radio-card">
+                                    <input type="radio" name="accesSecuriteSub" value="manque">
+                                    <span class="card-content">manque</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="radio" name="accesSecuriteSub" value="insuffisant">
+                                    <span class="card-content">insuffisant</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner une sous-option.</span>
+                            </div>
+                        </div>
+
+                        <!-- Photo Upload (Always required for Accès et sécurité) -->
+                        <div class="photo-upload input-group">
+                            <label for="photoAcces" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                            <input type="file" id="photoAcces" accept="image/*" capture="environment" style="display: none;" required>
+                            <div class="photo-preview-container hidden" id="preview-container-acces">
+                                <img id="preview-img-acces" src="" alt="Aperçu" class="photo-preview">
+                                <button type="button" class="btn-remove-photo" data-target="photoAcces">✖</button>
+                            </div>
+                            <span class="error-text">Une photo est obligatoire !</span>
+                        </div>
+                    </div>
+
+                    <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <!-- Question 2B -->
+                    <div class="question-block">
+                        <label>Consignes de sécurité visibles: *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="consignesVisibles" value="existant" required>
+                                <span class="card-content">existant</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="consignesVisibles" value="manque">
+                                <span class="card-content">manque</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="consignesVisibles" value="Illisible/non visible">
+                                <span class="card-content">illisible/non visible</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Photo Upload (Required ONLY IF Illisible/non visible) -->
+                        <div id="consignesPhotoGroup" class="photo-upload input-group hidden">
+                            <label for="photoConsignes" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                            <input type="file" id="photoConsignes" accept="image/*" capture="environment" style="display: none;">
+                            <div class="photo-preview-container hidden" id="preview-container-consignes">
+                                <img id="preview-img-consignes" src="" alt="Aperçu" class="photo-preview">
+                                <button type="button" class="btn-remove-photo" data-target="photoConsignes">✖</button>
+                            </div>
+                            <span class="error-text">Une photo est obligatoire pour cette option !</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="form-step" id="step-3">
+                    <div class="question-block">
+                        <label>Matériaux et fabrication : *</label>
+                        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1rem;">Envoyer des photos de la zone de stockage (le matériel doit etre visible).</p>
+                        
+                        <div class="photo-upload input-group">
+                            <label for="photoMateriaux" class="btn btn-secondary photo-btn">📸 Prendre / Joindre des photos *</label>
+                            <input type="file" id="photoMateriaux" accept="image/*" capture="environment" multiple style="display: none;" required>
+                            
+                            <!-- Gallery -->
+                            <div class="photo-gallery" id="gallery-materiaux" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
+                            </div>
+                            <span class="error-text">Une photo est obligatoire !</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 4 -->
+                <div class="form-step" id="step-4">
+                    <div class="question-block">
+                        <label>Substances dangereuses: *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="substancesDangereuses" value="non" required>
+                                <span class="card-content">non</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="substancesDangereuses" value="oui">
+                                <span class="card-content">oui</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Sub Options (Hidden by default) -->
+                        <div id="substancesSubGroup" class="hidden is-checkbox-group">
+                            <label>Détails (oui): *</label>
+                            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">Plusieurs choix possibles</p>
+                            <div class="checkbox-options input-group radio-options">
+                                <label class="radio-card">
+                                    <input type="checkbox" name="substancesSub" value="date d'expiration correcte">
+                                    <span class="card-content">date d'expiration correcte</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="substancesSub" value="signaux de danger visibles + lisibles">
+                                    <span class="card-content">signaux de danger visibles + lisibles</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="substancesSub" value="stockage correct" id="chk-stockage-correct">
+                                    <span class="card-content">stockage correct</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner au moins une option.</span>
+                            </div>
+
+                            <!-- Photo Upload for stockage correct -->
+                            <div id="stockagePhotoGroup" class="photo-upload input-group hidden" style="margin-top: 1rem;">
+                                <label for="photoStockage" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                                <input type="file" id="photoStockage" accept="image/*" capture="environment" style="display: none;">
+                                <div class="photo-preview-container hidden" id="preview-container-stockage">
+                                    <img id="preview-img-stockage" src="" alt="Aperçu" class="photo-preview">
+                                    <button type="button" class="btn-remove-photo" data-target="photoStockage">✖</button>
+                                </div>
+                                <span class="error-text">Une photo est obligatoire pour cette option !</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 5 -->
+                <div class="form-step" id="step-5">
+                    <div class="question-block">
+                        <label>Machines et outils: *</label>
+                        <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">Plusieurs choix possibles</p>
+                        <div class="checkbox-options input-group radio-options is-required-checkbox">
+                            <label class="radio-card">
+                                <input type="checkbox" name="machinesOutils" value="outillage propre, prêt à l'emploi et complet">
+                                <span class="card-content">outillage propre, prêt à l'emploi et complet</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="checkbox" name="machinesOutils" value="risque de trébuchement dû aux câbles">
+                                <span class="card-content">risque de trébuchement dû aux câbles</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="checkbox" name="machinesOutils" value="électricité (câble défectueux, etc.)">
+                                <span class="card-content">électricité (câble défectueux, etc.)</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner au moins une option.</span>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 6 -->
+                <div class="form-step" id="step-6">
+                    <div class="question-block">
+                        <label>Equipement de protection individuelle (EPI) : *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="epi" value="EPI en bon état et porté" required>
+                                <span class="card-content">EPI en bon état et porté</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="epi" value="absence d'EPI">
+                                <span class="card-content">absence d'EPI</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="epi" value="EPI incomplet">
+                                <span class="card-content">EPI incomplet</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="epi" value="EPI non porté">
+                                <span class="card-content">EPI non porté</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+                    </div>
+
+                    <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <!-- Question 6B -->
+                    <div class="question-block">
+                        <label>Aide au levage et au transport: *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="aideLevage" value="non requis" required>
+                                <span class="card-content">non requis</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="aideLevage" value="oui">
+                                <span class="card-content">oui</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Sub Options (Hidden by default) -->
+                        <div id="aideLevageSubGroup" class="hidden is-checkbox-group">
+                            <label>Détails (oui): *</label>
+                            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">Plusieurs choix possibles</p>
+                            <div class="checkbox-options input-group radio-options">
+                                <label class="radio-card">
+                                    <input type="checkbox" name="aideLevageSub" value="Défaut" id="chk-defaut">
+                                    <span class="card-content">Défaut</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="aideLevageSub" value="Inadapté">
+                                    <span class="card-content">Inadapté</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="aideLevageSub" value="Non utilisé par les employés">
+                                    <span class="card-content">Non utilisé par les employés</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner au moins une option.</span>
+                            </div>
+
+                            <!-- Photo Upload for Défaut -->
+                            <div id="defautPhotoGroup" class="photo-upload input-group hidden" style="margin-top: 1rem;">
+                                <label for="photoDefaut" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                                <input type="file" id="photoDefaut" accept="image/*" capture="environment" style="display: none;">
+                                <div class="photo-preview-container hidden" id="preview-container-defaut">
+                                    <img id="preview-img-defaut" src="" alt="Aperçu" class="photo-preview">
+                                    <button type="button" class="btn-remove-photo" data-target="photoDefaut">✖</button>
+                                </div>
+                                <span class="error-text">Une photo est obligatoire pour cette option !</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 7 -->
+                <div class="form-step" id="step-7">
+                    <!-- Domaine d'activité -->
+                    <div class="question-block">
+                        <label>Domaine d'activité : *</label>
+                        <div class="photo-upload input-group">
+                            <label for="photoDomaine" class="btn btn-secondary photo-btn">📸 Prendre / Joindre des photos *</label>
+                            <input type="file" id="photoDomaine" accept="image/*" multiple capture="environment" style="display: none;" required>
+                            <div id="gallery-domaine" style="margin-top: 10px;"></div>
+                            <span class="error-text">Une photo est obligatoire !</span>
+                        </div>
+                    </div>
+
+                    <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <!-- Déchets de chantier -->
+                    <div class="question-block">
+                        <label>Déchets de chantier, emballages triés correctement : *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="dechetsChantier" value="oui" required>
+                                <span class="card-content">oui</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="dechetsChantier" value="non">
+                                <span class="card-content">non</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Photo if "non" -->
+                        <div id="dechetsPhotoGroup" class="photo-upload input-group hidden" style="margin-top: 1rem;">
+                            <label for="photoDechets" class="btn btn-secondary photo-btn">📸 Prendre / Joindre une photo *</label>
+                            <input type="file" id="photoDechets" accept="image/*" capture="environment" style="display: none;">
+                            <div class="photo-preview-container hidden" id="preview-container-dechets">
+                                <img id="preview-img-dechets" src="" alt="Aperçu" class="photo-preview">
+                                <button type="button" class="btn-remove-photo" data-target="photoDechets">✖</button>
+                            </div>
+                            <span class="error-text">Une photo est obligatoire pour cette option !</span>
+                        </div>
+                    </div>
+
+                    <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <!-- Installations sanitaires -->
+                    <div class="question-block">
+                        <label>Installations sanitaires utilisables et hygiéniques : *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="installationsSanitaires" value="oui" required>
+                                <span class="card-content">oui</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="installationsSanitaires" value="non">
+                                <span class="card-content">non</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+                    </div>
+
+                    <hr style="border: 1px solid var(--glass-border); margin: 2rem 0;">
+
+                    <!-- Matériel de premiers secours -->
+                    <div class="question-block">
+                        <label>Matériel de premiers secours disponible : *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="materielSecours" value="oui" required>
+                                <span class="card-content">oui</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="materielSecours" value="non">
+                                <span class="card-content">non</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Sub Options if "non" -->
+                        <div id="materielSecoursSubGroup" class="hidden is-checkbox-group">
+                            <label>Détails (non) : *</label>
+                            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">Plusieurs choix possibles</p>
+                            <div class="checkbox-options input-group radio-options">
+                                <label class="radio-card">
+                                    <input type="checkbox" name="materielSecoursSub" value="Manquant">
+                                    <span class="card-content">Manquant</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="materielSecoursSub" value="Incomplet">
+                                    <span class="card-content">Incomplet</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="materielSecoursSub" value="Expiré">
+                                    <span class="card-content">Expiré</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner au moins une option.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 8 -->
+                <div class="form-step" id="step-8">
+                    <!-- Echaufaudages sur place -->
+                    <div class="question-block">
+                        <label>Échafaudages sur place : *</label>
+                        <div class="radio-options input-group">
+                            <label class="radio-card">
+                                <input type="radio" name="echafaudages" value="non" required>
+                                <span class="card-content">non</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="echafaudages" value="oui">
+                                <span class="card-content">oui</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="echafaudages" value="Modifications apportées">
+                                <span class="card-content">Modifications apportées</span>
+                            </label>
+                            <span class="error-text">Veuillez sélectionner une option.</span>
+                        </div>
+
+                        <!-- Sub Options if "oui" -->
+                        <div id="echafaudagesSubGroup" class="hidden is-checkbox-group">
+                            <label>Détails (oui) : *</label>
+                            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">Plusieurs choix possibles</p>
+                            <div class="checkbox-options input-group radio-options">
+                                <label class="radio-card">
+                                    <input type="checkbox" name="echafaudagesSub" value="Protocole de contrôle appose de manière visible">
+                                    <span class="card-content">Protocole de contrôle appose de manière visible</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="echafaudagesSub" value="Monte par du personnel forme en interne">
+                                    <span class="card-content">Monte par du personnel forme en interne</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner au moins une option.</span>
+                            </div>
+                        </div>
+
+                        <!-- Modifications apportées options -->
+                        <div id="modificationsSubGroup" class="hidden is-checkbox-group" style="margin-top: 1rem;">
+                            <label>Détails (Modifications) : *</label>
+                            <p style="font-size: 0.8rem; color: #cbd5e1; margin-bottom: 0.5rem;">Plusieurs choix possibles</p>
+                            <div class="checkbox-options input-group radio-options">
+                                <label class="radio-card">
+                                    <input type="checkbox" name="modificationsSub" value="Oui, tout est documenté et approuvé">
+                                    <span class="card-content">Oui, tout est documenté et approuvé</span>
+                                </label>
+                                <label class="radio-card">
+                                    <input type="checkbox" name="modificationsSub" value="Non, sécurité non respectée">
+                                    <span class="card-content">Non, sécurité non respectée</span>
+                                </label>
+                                <span class="error-text">Veuillez sélectionner au moins une option.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="button" class="btn btn-primary next-btn">Suivant</button>
+                    </div>
+                </div>
+
+                <!-- STEP 9 -->
+                <div class="form-step" id="step-9">
+                    <div class="question-block">
+                        <label>Autres remarques/observations/défauts :</label>
+                        <textarea id="autresRemarques" name="autresRemarques" rows="4" placeholder="Vos remarques ici..."></textarea>
+                    </div>
+
+                    <div class="question-block" style="margin-top: 1.5rem;">
+                        <label>Prendre des photos :</label>
+                        <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 1rem;">Vous pouvez ajouter plusieurs photos.</p>
+                        
+                        <div class="photo-upload input-group">
+                            <label for="photoRemarques" class="btn btn-secondary photo-btn">📸 Prendre / Joindre des photos</label>
+                            <input type="file" id="photoRemarques" accept="image/*" capture="environment" multiple style="display: none;">
+                            
+                            <!-- Gallery -->
+                            <div class="photo-gallery" id="gallery-remarques" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1rem;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group between">
+                        <button type="button" class="btn btn-secondary prev-btn">Précédent</button>
+                        <button type="submit" class="btn btn-primary" id="submit-btn" style="background: linear-gradient(135deg, #0066ff 0%, #00d9ff 100%); color: #fff; font-weight: 600;">Soumettre</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
