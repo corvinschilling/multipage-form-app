@@ -27,17 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
         photoRemarques: []
     };
 
-    // Check saved language
-    const savedLang = localStorage.getItem('sitecheck_lang');
-    if (savedLang === 'fr') {
-        if (langSelection) langSelection.classList.add('hidden');
-        if (formContent) formContent.classList.remove('hidden');
-    }
-
     // Language Handlers
     if (langFrBtn) {
         langFrBtn.addEventListener('click', () => {
-            localStorage.setItem('sitecheck_lang', 'fr');
             langSelection.classList.add('hidden');
             formContent.classList.remove('hidden');
         });
